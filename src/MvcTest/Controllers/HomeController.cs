@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace MvcTest.Controllers
 {
-    [Authorize]
+    [Authorize("ExamplePolicy")]
     public class HomeController : Controller
     {
         [AllowAnonymous]

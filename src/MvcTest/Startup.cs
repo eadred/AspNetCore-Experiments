@@ -12,6 +12,8 @@ using Microsoft.Extensions.Logging;
 using MvcTest.Data;
 using MvcTest.Models;
 using MvcTest.Services;
+using MvcTest.Services.Authorization;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MvcTest
 {
@@ -47,11 +49,21 @@ namespace MvcTest
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("ExamplePolicy", policy =>
+                {
+                    policy.AddRequirements(new ExampleAuthRequirement());
+                });
+            });
+
             services.AddMvc();
 
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
+
+            services.AddSingleton<IAuthorizationHandler, ExampleAuthHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
