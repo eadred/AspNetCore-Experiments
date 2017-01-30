@@ -30,6 +30,12 @@ namespace MvcTest.Controllers
             return View();
         }
 
+        public IActionResult Test(int id)
+        {
+            ViewData["Id"] = id;
+            return View();
+        }
+
         [AllowAnonymous]
         public IActionResult Error()
         {
