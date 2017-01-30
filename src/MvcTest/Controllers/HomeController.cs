@@ -4,12 +4,20 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using MvcTest.Models;
 
 namespace MvcTest.Controllers
 {
-    [Authorize("ExamplePolicy")]
+    [Authorize]
     public class HomeController : Controller
     {
+        private IAuthorizationService authService;
+
+        public HomeController(IAuthorizationService authService)
+        {
+            this.authService = authService;
+        }
+
         [AllowAnonymous]
         public IActionResult Index()
         {
@@ -30,8 +38,16 @@ namespace MvcTest.Controllers
             return View();
         }
 
-        public IActionResult Test(int id)
+        public async Task<IActionResult> Test(int id)
         {
+            //Would fetch this from Db or whatever...
+            var item = new TestItem(id);
+
+            if (!await authService.AuthorizeAsync(User, item, "ExamplePolicy"))
+            {
+                return new ChallengeResult();
+            }
+
             ViewData["Id"] = id;
             return View();
         }

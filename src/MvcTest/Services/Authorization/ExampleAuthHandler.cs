@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Filters;
+using MvcTest.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,39 +8,20 @@ using System.Threading.Tasks;
 
 namespace MvcTest.Services.Authorization
 {
-    public class ExampleAuthHandler : AuthorizationHandler<ExampleAuthRequirement>
+    public class ExampleAuthHandler : AuthorizationHandler<ExampleAuthRequirement, TestItem>
     {
-        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, ExampleAuthRequirement requirement)
+        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, ExampleAuthRequirement requirement, TestItem resource)
         {
-            if (context.User.Identity.IsAuthenticated)
+            if (context.User.Identity.IsAuthenticated) //Strictly speaking don't have to do this if the action or controller is using Authorize with the default handler
             {
-                var resource = context.Resource as AuthorizationFilterContext;
-                if (resource != null)
+                if (resource.Id == 1)
                 {
-                    object id;
-                    if (resource.RouteData.Values.TryGetValue("id", out id))
-                    {
-                        if ((string)id == "1")
-                        {
-                            context.Succeed(requirement);
-                        }
-                        else
-                        {
-                            context.Fail();
-                        }
-
-                        return Task.CompletedTask;
-                    }
+                    context.Succeed(requirement);
+                    return Task.CompletedTask;
                 }
-
-                context.Succeed(requirement);
-
-            }
-            else
-            {
-                context.Fail();
             }
 
+            context.Fail();
             return Task.CompletedTask;
         }
     }
