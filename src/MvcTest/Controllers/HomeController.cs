@@ -13,9 +13,9 @@ namespace MvcTest.Controllers
     public class HomeController : Controller
     {
         private IAuthorizationService authService;
-        private SuiteDbContext suiteDbContext;
+        private ApplicationDbContext suiteDbContext;
 
-        public HomeController(IAuthorizationService authService, SuiteDbContext suiteDbContext)
+        public HomeController(IAuthorizationService authService, ApplicationDbContext suiteDbContext)
         {
             this.authService = authService;
             this.suiteDbContext = suiteDbContext;
