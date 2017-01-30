@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using MvcTest.Models;
+using MvcTest.Data;
 
 namespace MvcTest.Controllers
 {
@@ -12,10 +13,12 @@ namespace MvcTest.Controllers
     public class HomeController : Controller
     {
         private IAuthorizationService authService;
+        private SuiteDbContext suiteDbContext;
 
-        public HomeController(IAuthorizationService authService)
+        public HomeController(IAuthorizationService authService, SuiteDbContext suiteDbContext)
         {
             this.authService = authService;
+            this.suiteDbContext = suiteDbContext;
         }
 
         [AllowAnonymous]
