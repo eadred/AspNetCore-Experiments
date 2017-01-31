@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MvcTest.Models
+namespace MvcTest.Models.Suites
 {
     public class Suite
     {

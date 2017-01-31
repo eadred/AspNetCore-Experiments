@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MvcTest.Models
+namespace MvcTest.Models.Suites
 {
     public class UserSuite
     {

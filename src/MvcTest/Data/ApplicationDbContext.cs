@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using MvcTest.Models;
+using MvcTest.Models.Suites;
 
 namespace MvcTest.Data
 {

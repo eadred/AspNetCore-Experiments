@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MvcTest.Data;
-using MvcTest.Models;
+using MvcTest.Models.Suites;
 
 namespace MvcTest.Controllers
 {
