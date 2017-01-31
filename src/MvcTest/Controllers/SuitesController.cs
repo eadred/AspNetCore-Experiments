@@ -7,22 +7,31 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MvcTest.Data;
 using MvcTest.Models.Suites;
+using Microsoft.AspNetCore.Identity;
+using MvcTest.Models;
 
 namespace MvcTest.Controllers
 {
     public class SuitesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public SuitesController(ApplicationDbContext context)
+        private readonly Lazy<ApplicationUser[]> _allUsers;
+
+        public SuitesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
-            _context = context;    
+            _context = context;
+            _userManager = userManager;
+            _allUsers = new Lazy<ApplicationUser[]>(() => _userManager.Users.ToArray());
         }
 
         // GET: Suites
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Suites.ToListAsync());
+            var allSuites = await _context.Suites.ToListAsync();
+
+            return View(allSuites.Select(SuiteToViewModel).ToArray());
         }
 
         // GET: Suites/Details/5
@@ -39,7 +48,7 @@ namespace MvcTest.Controllers
                 return NotFound();
             }
 
-            return View(suite);
+            return View(SuiteToViewModel(suite));
         }
 
         // GET: Suites/Create
@@ -53,11 +62,11 @@ namespace MvcTest.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SuiteId,Name")] Suite suite)
+        public async Task<IActionResult> Create([Bind("SuiteId,Name")] SuiteViewModel suite)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(suite);
+                _context.Add(ViewModelToSuite(suite));
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
@@ -77,7 +86,7 @@ namespace MvcTest.Controllers
             {
                 return NotFound();
             }
-            return View(suite);
+            return View(SuiteToViewModel(suite));
         }
 
         // POST: Suites/Edit/5
@@ -85,7 +94,7 @@ namespace MvcTest.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("SuiteId,Name")] Suite suite)
+        public async Task<IActionResult> Edit(int id, [Bind("SuiteId,Name")] SuiteViewModel suite)
         {
             if (id != suite.SuiteId)
             {
@@ -96,8 +105,16 @@ namespace MvcTest.Controllers
             {
                 try
                 {
-                    _context.Update(suite);
-                    await _context.SaveChangesAsync();
+                    var updatedSuite = ViewModelToSuite(suite);
+
+                    //Can't post back a set of user selections so Edit can't modify the associated users => just copy over original set
+                    var originalSuite = _context.Suites.SingleOrDefault(s => s.SuiteId == id);
+                    if (originalSuite != null)
+                    {
+                        originalSuite.Name = suite.Name;
+                        _context.Update(originalSuite);
+                        await _context.SaveChangesAsync();
+                    }  
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -129,7 +146,7 @@ namespace MvcTest.Controllers
                 return NotFound();
             }
 
-            return View(suite);
+            return View(SuiteToViewModel(suite));
         }
 
         // POST: Suites/Delete/5
@@ -146,6 +163,41 @@ namespace MvcTest.Controllers
         private bool SuiteExists(int id)
         {
             return _context.Suites.Any(e => e.SuiteId == id);
+        }
+
+        private SuiteViewModel SuiteToViewModel(Suite suite)
+        {
+            HashSet<string> allowedUsers = new HashSet<string>();
+
+            allowedUsers = new HashSet<string>(
+                suite.AllowedUsers?.Select(su => su.AllowedUserId) ?? Enumerable.Empty<string>());
+
+
+            var suiteUsers = _allUsers.Value
+                .Select(u => new SuiteUser
+                {
+                    UserId = u.Id,
+                    UserName = u.UserName,
+                    Selected = allowedUsers.Contains(u.Id)
+                });
+
+            return new SuiteViewModel
+            {
+                SuiteId = suite.SuiteId,
+                Name = suite.Name,
+                Users = suiteUsers.ToArray()
+            };
+        }
+
+        private Suite ViewModelToSuite(SuiteViewModel suiteViewModel)
+        {
+            var suite = new Suite { SuiteId = suiteViewModel.SuiteId, Name = suiteViewModel.Name, AllowedUsers = null };
+            suite.AllowedUsers = suiteViewModel.Users
+                ?.Where(u => u.Selected)
+                ?.Select(u => new UserSuite { AllowedUserId = u.UserId, Suite = suite }) //Will this work or will we have to pull out the actual user object?
+                ?.ToArray();
+
+            return suite;
         }
     }
 }
