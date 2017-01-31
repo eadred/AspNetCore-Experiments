@@ -51,9 +51,9 @@ namespace MvcTest
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("ExamplePolicy", policy =>
+                options.AddPolicy("IsAdmin", policy =>
                 {
-                    policy.AddRequirements(new ExampleAuthRequirement());
+                    policy.AddRequirements(new RoleRequirement("admin"));
                 });
             });
 
@@ -63,7 +63,7 @@ namespace MvcTest
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
 
-            services.AddSingleton<IAuthorizationHandler, ExampleAuthHandler>();
+            services.AddSingleton<IAuthorizationHandler, RoleAuthHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

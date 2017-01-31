@@ -46,7 +46,7 @@ namespace MvcTest.Controllers
             //Would fetch this from Db or whatever...
             var item = new TestItem(id);
 
-            if (!await authService.AuthorizeAsync(User, item, "ExamplePolicy"))
+            if (!await authService.AuthorizeAsync(User, item, "IsAdmin"))
             {
                 return new ChallengeResult();
             }
