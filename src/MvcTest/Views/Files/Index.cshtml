@@ -1,4 +1,6 @@
-﻿@{
+﻿@model MvcTest.Models.Files.FilesViewModel
+
+@{
     ViewData["Title"] = "Files";
 }
 
@@ -21,10 +23,18 @@
           asp-controller="Files"
           method="get">
 
-        <input type="text" name="filename" />
+        <input type="text" name="filename" value="@Model.DownloadFile" />
         <input type="submit" value="Download" />
     </form>
 </div>
+
+@if (!string.IsNullOrEmpty(Model.Message))
+{
+    <div style="margin: 10px">
+        <p>@Model.Message</p>
+    </div>
+}
+
 
 
 

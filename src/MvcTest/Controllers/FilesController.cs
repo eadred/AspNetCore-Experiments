@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Net.Http.Headers;
 using System.IO;
+using MvcTest.Models.Files;
 
 namespace MvcTest.Controllers
 {
@@ -21,7 +22,7 @@ namespace MvcTest.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return IndexView("Upload a file or download a previously uploaded one", null);
         }
 
         [HttpPost]
@@ -30,26 +31,42 @@ namespace MvcTest.Controllers
             //Parameter will be an IList<IFormFile> if the multiple option is used in the view input
             if (file != null)
             {
-                var filename = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                var filename = file.FileName;
 
-                filename = Path.Combine(env.WebRootPath, filename);
+                var fullFilename = Path.Combine(env.WebRootPath, filename);
 
-                using (FileStream fs = System.IO.File.Create(filename))
+                using (FileStream fs = System.IO.File.Create(fullFilename))
                 {
                     file.CopyTo(fs);
                     fs.Flush();
                 }
 
+                return IndexView("Upload a file or download a previously uploaded one", filename);
             }
 
-            return View("Index");
+            return IndexView("No file was selected", null);
         }
 
-        public FileResult Download(string filename)
+        public IActionResult Download(string filename)
         {
+            if (string.IsNullOrEmpty(filename))
+            {
+                return IndexView("No file was selected", filename);
+            }
+
             var fullFilename = Path.Combine(env.WebRootPath, filename);
 
+            if (!System.IO.File.Exists(fullFilename))
+            {
+                return IndexView("File does not exist", filename);
+            }
+
             return File(System.IO.File.OpenRead(fullFilename), System.Net.Mime.MediaTypeNames.Application.Octet, filename);   
+        }
+
+        private ViewResult IndexView(string message, string downloadFile)
+        {
+            return View("Index", new FilesViewModel { Message = message, DownloadFile = downloadFile });
         }
     }
 }
