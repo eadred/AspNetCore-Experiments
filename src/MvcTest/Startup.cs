@@ -87,6 +87,21 @@ namespace MvcTest
 
             app.UseIdentity();
 
+            using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                //Might also want to call ApplicationDbContext.Database.Migrate
+                //Might also want to put this in the env.IsDevelopment block
+                var dbContext = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
+                dbContext.EnsureRoles();
+
+                //Can do something like this to add a user to a role
+                //Not sure why we still have to call dbContext.SaveChanges when AutoSaveChanges is true
+                //var userStore = new UserStore<ApplicationUser>(dbContext) { AutoSaveChanges = true };
+                //var user = userStore.Users.First();
+                //userStore.AddToRoleAsync(user, "admin").Wait();
+                //dbContext.SaveChanges();
+            }
+
             // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
 
             app.UseMvc(routes =>
