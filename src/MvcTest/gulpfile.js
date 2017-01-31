@@ -7,6 +7,8 @@ var gulp = require("gulp"),
     htmlmin = require("gulp-htmlmin"),
     uglify = require("gulp-uglify"),
     merge = require("merge-stream"),
+    rename = require("gulp-rename"),
+    clean = require("gulp-clean"),
     del = require("del"),
     bundleconfig = require("./bundleconfig.json");
 
@@ -22,6 +24,10 @@ gulp.task("min:js", function () {
     var tasks = getBundles(regex.js).map(function (bundle) {
         return gulp.src(bundle.inputFiles, { base: "." })
             .pipe(concat(bundle.outputFileName))
+            .pipe(gulp.dest("."))
+            .pipe(rename(function (path) {
+                path.extname = ".min" + path.extname;
+            }))
             .pipe(uglify())
             .pipe(gulp.dest("."));
     });
@@ -49,11 +55,16 @@ gulp.task("min:html", function () {
 });
 
 gulp.task("clean", function () {
-    var files = bundleconfig.map(function (bundle) {
-        return bundle.outputFileName;
+    var tasks = bundleconfig.map(function (bundle) {
+        return gulp.src(bundle.outputFileName, { base: "." })
+            .pipe(clean())
+            .pipe(rename(function (path) {
+                path.extname = ".min" + path.extname;
+            }))
+            .pipe(clean());
     });
 
-    return del(files);
+    return merge(tasks);
 });
 
 gulp.task("watch", function () {
