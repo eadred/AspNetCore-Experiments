@@ -4,6 +4,28 @@
 
 <h2>Suites</h2>
 
+<div data-ng-app="suites" data-ng-controller="MainController as ctrl">
+    <div data-ng-repeat="suite in ctrl.suites" data-ng-controller="SuiteController as sCtrl">
+        <h3>{{suite.name}}</h3>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Model</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr data-ng-repeat="model in sCtrl.suite.models">
+                    <td>{{model.name}}</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+</div>
+
 @section scripts {
     <environment names="Development">
         <script src="~/js/suites.js"></script>

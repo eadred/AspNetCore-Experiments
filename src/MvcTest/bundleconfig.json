@@ -19,6 +19,7 @@
   {
     "outputFileName": "wwwroot/js/suites.js",
     "inputFiles": [
+      "content/js/suites/main.module.js", //Make sure the main module is defined before anything else
       "content/js/suites/**/*.js"
     ],
     "minify": {
