@@ -29,9 +29,7 @@ namespace MvcTest.Controllers
         // GET: Suites
         public async Task<IActionResult> Index()
         {
-            var allSuites = await _context.Suites.ToListAsync();
-
-            return View(allSuites.Select(SuiteToViewModel).ToArray());
+            return View();
         }
 
         // GET: Suites/Details/5

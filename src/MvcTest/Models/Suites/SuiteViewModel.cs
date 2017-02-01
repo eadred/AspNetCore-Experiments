@@ -12,6 +12,8 @@ namespace MvcTest.Models.Suites
         public string Name { get; set; }
 
         public IEnumerable<SuiteUser> Users { get; set; }  
+
+        public ICollection<Model> Models { get; set; }
     }
 
     public class SuiteUser

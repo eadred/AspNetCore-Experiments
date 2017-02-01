@@ -15,5 +15,16 @@
       "renameLocals": false
     },
     "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/js/suites.js",
+    "inputFiles": [
+      "content/js/suites/**/*.js"
+    ],
+    "minify": {
+      "enabled": false,
+      "renameLocals": false
+    },
+    "sourceMap": false
   }
 ]
