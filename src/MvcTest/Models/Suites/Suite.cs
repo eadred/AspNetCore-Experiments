@@ -12,5 +12,7 @@ namespace MvcTest.Models.Suites
         public string Name { get; set; }
 
         public virtual ICollection<UserSuite> AllowedUsers { get; set; }
+
+        public virtual ICollection<Model> Models { get; set; }
     }
 }
