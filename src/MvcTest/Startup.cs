@@ -26,6 +26,12 @@ namespace MvcTest
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
 
+            string isMac = Environment.GetEnvironmentVariable("IS_MAC");
+            if (!string.IsNullOrEmpty(isMac) && isMac == "1")
+            {
+                builder = builder.AddJsonFile($"appsettings.mac.json", optional: true);
+            }
+            
             if (env.IsDevelopment())
             {
                 // For more details on using the user secret store see http://go.microsoft.com/fwlink/?LinkID=532709
