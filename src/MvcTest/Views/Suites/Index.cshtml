@@ -18,7 +18,7 @@
     </div>
 
     <div class="container-fluid">
-        <div data-ng-repeat="suite in ctrl.suites" data-ng-controller="SuiteController as sCtrl">
+        <div data-ng-repeat="suite in ctrl.suites">
             <div class="row suite-header">
                 <h3 class="col-sm-8">{{suite.name}}</h3>
                 <div class="btn-group pull-right suite-buttons" role="group" aria-label="...">
@@ -42,7 +42,7 @@
                         <table class="table">
 
                             <tbody>
-                                <tr data-ng-repeat="model in sCtrl.suite.models">
+                                <tr data-ng-repeat="model in suite.models">
                                     <td class="col-sm-8">{{model.name}}</td>
                                     <td>
                                         <div class="btn-group pull-right suite-model-buttons" role="group" aria-label="...">

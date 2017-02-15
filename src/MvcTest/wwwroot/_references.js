@@ -2,7 +2,6 @@
 /// <reference path="../content/js/site/site.js" />
 /// <reference path="../content/js/suites/main.controller.js" />
 /// <reference path="../content/js/suites/main.module.js" />
-/// <reference path="../content/js/suites/suite.controller.js" />
 /// <reference path="../gulpfile.js" />
 /// <reference path="js/site.js" />
 /// <reference path="js/suites.js" />
