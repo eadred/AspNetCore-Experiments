@@ -14,6 +14,7 @@ using MvcTest.Models;
 using MvcTest.Services;
 using MvcTest.Services.Authorization;
 using Microsoft.AspNetCore.Authorization;
+using MvcTest.Services.Suites;
 
 namespace MvcTest
 {
@@ -70,6 +71,7 @@ namespace MvcTest
             services.AddTransient<ISmsSender, AuthMessageSender>();
 
             services.AddSingleton<IAuthorizationHandler, RoleAuthHandler>();
+            services.AddSingleton<ISuitesService, SuitesService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

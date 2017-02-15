@@ -9,6 +9,7 @@ using MvcTest.Models;
 using MvcTest.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using MvcTest.Services.Suites;
 
 namespace MvcTest.Controllers
 {
@@ -16,42 +17,21 @@ namespace MvcTest.Controllers
     [Route("api/Suites")]
     public class SuitesApiController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ISuitesService _suitesSvc;
         private readonly UserManager<ApplicationUser> _userManager;
 
         private readonly Lazy<ApplicationUser[]> _allUsers;
 
-        public SuitesApiController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public SuitesApiController(ISuitesService suitesSvc, UserManager<ApplicationUser> userManager)
         {
-            _context = context;
+            _suitesSvc = suitesSvc;
             _userManager = userManager;
             _allUsers = new Lazy<ApplicationUser[]>(() => _userManager.Users.ToArray());
         }
 
         public async Task<ICollection<SuiteViewModel>> Index()
         {
-            ICollection<SuiteViewModel> suites = new[] {
-                new SuiteViewModel
-                {
-                    SuiteId = 0,
-                    Name = "S1",
-                    Models = new[]
-                    {
-                        new Model { ModelId = 0, Name = "M1A" },
-                        new Model { ModelId = 1, Name = "M1B" }
-                    }
-                },
-                new SuiteViewModel
-                {
-                    SuiteId = 1,
-                    Name = "S2",
-                    Models = new[]
-                    {
-                        new Model { ModelId = 2, Name = "M2A" },
-                        new Model { ModelId = 3, Name = "M2B" }
-                    }
-                }
-            };
+            ICollection<SuiteViewModel> suites = _suitesSvc.GetAllSuites();
 
             return await Task.FromResult(suites);
 
