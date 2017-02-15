@@ -1,8 +1,8 @@
 ﻿[
   {
-    "outputFileName": "wwwroot/css/site.min.css",
+    "outputFileName": "wwwroot/css/site.css",
     "inputFiles": [
-      "wwwroot/css/site.css"
+      "content/css/site/**/*.css"
     ]
   },
   {
@@ -19,7 +19,7 @@
   {
     "outputFileName": "wwwroot/js/suites.js",
     "inputFiles": [
-      "content/js/suites/main.module.js", //Make sure the main module is defined before anything else
+      "content/js/suites/main.module.js",
       "content/js/suites/**/*.js"
     ],
     "minify": {

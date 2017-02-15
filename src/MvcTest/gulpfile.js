@@ -38,6 +38,10 @@ gulp.task("min:css", function () {
     var tasks = getBundles(regex.css).map(function (bundle) {
         return gulp.src(bundle.inputFiles, { base: "." })
             .pipe(concat(bundle.outputFileName))
+            .pipe(gulp.dest("."))
+            .pipe(rename(function (path) {
+                path.extname = ".min" + path.extname;
+            }))
             .pipe(cssmin())
             .pipe(gulp.dest("."));
     });
