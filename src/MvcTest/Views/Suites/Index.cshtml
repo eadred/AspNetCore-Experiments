@@ -66,6 +66,15 @@
     </div>
 </div>
 
+@section styles {
+    <environment names="Development">
+        <link rel="stylesheet" href="~/css/suites.css" />
+    </environment>
+    <environment names="Staging,Production">
+        <link rel="stylesheet" href="~/css/suites.min.css" asp-append-version="true" />
+    </environment>
+}
+
 @section scripts {
     <environment names="Development">
         <script src="~/js/suites.js"></script>

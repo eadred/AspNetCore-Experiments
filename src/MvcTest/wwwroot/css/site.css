@@ -48,19 +48,3 @@ textarea {
     display: none
   }
 }
-
-.suite-header {
-    background-color:aliceblue
-}
-
-.suite-buttons {
-    margin: 10px;
-}
-
-.suite-models {
-    margin-left: 10px;
-}
-
-.suite-model-buttons {
-    padding-top: 10px;
-}

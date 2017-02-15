@@ -6,6 +6,12 @@
     ]
   },
   {
+    "outputFileName": "wwwroot/css/suites.css",
+    "inputFiles": [
+      "content/css/suites/**/*.css"
+    ]
+  },
+  {
     "outputFileName": "wwwroot/js/site.js",
     "inputFiles": [
       "content/js/site/**/*.js"
