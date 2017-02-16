@@ -11,5 +11,7 @@ namespace MvcTest.Services.Suites
         ICollection<SuiteViewModel> GetAllSuites();
 
         void UpdateSuite(SuiteViewModel suite);
+
+        void DeleteSuite(int suiteId);
     }
 }

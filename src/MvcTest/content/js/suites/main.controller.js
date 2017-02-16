@@ -36,6 +36,38 @@
                 );
         }
 
+        self.deleteSuite = function (suite) {
+            var modal = $uibModal.open({
+                controller: 'ConfirmDialogController',
+                controllerAs: 'dlgCtrl',
+                templateUrl: 'confirmDialog.html',
+                resolve: {
+                    options: function () {
+                        return {
+                            title: 'Confirm deletion',
+                            content: 'Are you sure you want to delete suite ' + suite.name + '?',
+                            cancelBtnText: 'Don\'t delete',
+                            acceptBtnText: 'Delete'
+                        }; }
+                }
+            });
+
+            modal.result
+                .then(
+                    function () {
+                        return $http.delete('/api/Suites/' + suite.suiteId);
+                    })
+                .then(
+                    function (result) {
+                        reload();
+                    },
+                    function (errorResult) {
+                        var msg = (errorResult.data.errorMsg) ? errorResult.data.errorMsg : "Unknown error (" + errorResult.status + ")"
+                        showErrorDialog(msg);
+                    }
+                );
+        }
+
         reload();
 
         function reload() {

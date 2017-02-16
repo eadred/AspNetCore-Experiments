@@ -22,7 +22,8 @@ namespace MvcTest.Services.Suites
         public enum SuiteErrorType
         {
             NameBlank,
-            NameConflict
+            NameConflict,
+            NotFound
         }
     }
 }

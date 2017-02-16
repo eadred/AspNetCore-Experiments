@@ -9,6 +9,30 @@
 
     angular
         .module('suites')
+        .controller('ConfirmDialogController', ConfirmDialogController);
+
+    function ConfirmDialogController($uibModalInstance, options) {
+        var self = this;
+
+        self.title = options.title;
+        self.content = options.content;
+        self.cancelBtnText = options.cancelBtnText ? options.cancelBtnText : 'Cancel';
+        self.acceptBtnText = options.acceptBtnText ? options.acceptBtnText : 'Accept';
+
+        self.cancel = function () {
+            $uibModalInstance.dismiss();
+        }
+
+        self.accept = function () {
+            $uibModalInstance.close();
+        }
+    }
+})();
+(function () {
+    'use strict';
+
+    angular
+        .module('suites')
         .controller('EditDialogController', EditDialogController);
 
     function EditDialogController($uibModalInstance, suite) {
@@ -99,6 +123,38 @@
                 .then(
                     function (result) {
                         return $http.put('/api/Suites/' + result.suiteId, result);
+                    })
+                .then(
+                    function (result) {
+                        reload();
+                    },
+                    function (errorResult) {
+                        var msg = (errorResult.data.errorMsg) ? errorResult.data.errorMsg : "Unknown error (" + errorResult.status + ")"
+                        showErrorDialog(msg);
+                    }
+                );
+        }
+
+        self.deleteSuite = function (suite) {
+            var modal = $uibModal.open({
+                controller: 'ConfirmDialogController',
+                controllerAs: 'dlgCtrl',
+                templateUrl: 'confirmDialog.html',
+                resolve: {
+                    options: function () {
+                        return {
+                            title: 'Confirm deletion',
+                            content: 'Are you sure you want to delete suite ' + suite.name + '?',
+                            cancelBtnText: 'Don\'t delete',
+                            acceptBtnText: 'Delete'
+                        }; }
+                }
+            });
+
+            modal.result
+                .then(
+                    function () {
+                        return $http.delete('/api/Suites/' + suite.suiteId);
                     })
                 .then(
                     function (result) {

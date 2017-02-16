@@ -55,5 +55,12 @@ namespace MvcTest.Services.Suites
 
             _suites[suite.SuiteId] = suite;
         }
+
+        public void DeleteSuite(int suiteId)
+        {
+            if (!_suites.ContainsKey(suiteId)) throw new SuiteException(SuiteException.SuiteErrorType.NotFound, "The specified suite does not exist.");
+
+            _suites.Remove(suiteId);
+        }
     }
 }

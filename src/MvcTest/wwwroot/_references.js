@@ -1,5 +1,6 @@
 ﻿/// <autosync enabled="true" />
 /// <reference path="../content/js/site/site.js" />
+/// <reference path="../content/js/suites/confirmdialog.controller.js" />
 /// <reference path="../content/js/suites/editdialog.controller.js" />
 /// <reference path="../content/js/suites/errordialog.controller.js" />
 /// <reference path="../content/js/suites/main.controller.js" />

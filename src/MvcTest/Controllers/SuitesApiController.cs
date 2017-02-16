@@ -42,26 +42,27 @@ namespace MvcTest.Controllers
         [Route("{suiteId}")]
         public IActionResult EditSuite(int suiteId, [FromBody] SuiteViewModel suite)
         {
+            return UseSuitesService(() => _suitesSvc.UpdateSuite(suite));
+        }
+
+        [HttpDelete]
+        [Route("{suiteId}")]
+        public IActionResult DeleteSuite(int suiteId)
+        {
+            return UseSuitesService(() => _suitesSvc.DeleteSuite(suiteId));
+        }
+
+        private IActionResult UseSuitesService(Action useService)
+        {
             try
             {
-                _suitesSvc.UpdateSuite(suite);
+                useService();
             }
             catch (SuiteException ex)
             {
-                HttpStatusCode statusCode;
-                switch (ex.ErrorType)
-                {
-                    case SuiteException.SuiteErrorType.NameBlank:
-                        statusCode = HttpStatusCode.BadRequest;
-                        break;
-                    case SuiteException.SuiteErrorType.NameConflict:
-                        statusCode = HttpStatusCode.Conflict;
-                        break;
-                    default:
-                        statusCode = HttpStatusCode.BadRequest;
-                        break;
-                }
-                return StatusCode((int)statusCode, new { errorMsg = ex.Message });
+                return StatusCode(
+                    (int)ex.ErrorType.ToHttpErrorCode(),
+                    new { errorMsg = ex.Message });
             }
 
             return Ok();
