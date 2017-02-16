@@ -31,11 +31,17 @@ namespace MvcTest.Controllers
         }
 
         [HttpGet]
-        public async Task<ICollection<SuiteViewModel>> Index()
+        public ICollection<SuiteViewModel> Index()
         {
             ICollection<SuiteViewModel> suites = _suitesSvc.GetAllSuites();
 
-            return await Task.FromResult(suites);
+            return suites;
+        }
+
+        [HttpPost]
+        public IActionResult AddSuite([FromBody] SuiteViewModel suite)
+        {
+            return UseSuitesService(() => _suitesSvc.AddSuite(suite));
         }
 
         [HttpPut]

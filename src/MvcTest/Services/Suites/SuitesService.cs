@@ -41,7 +41,25 @@ namespace MvcTest.Services.Suites
             return _suites.Values.OrderBy(s => s.Name).ToList();
         }
 
+        public void AddSuite(SuiteViewModel newSuite)
+        {
+            AssignIdToSuite(newSuite);
+            ValidateSuite(newSuite);
+            SetSuite(newSuite);
+        }
+
         public void UpdateSuite(SuiteViewModel suite)
+        {
+            ValidateSuite(suite);
+            SetSuite(suite);
+        }
+
+        private void AssignIdToSuite(SuiteViewModel suite)
+        {
+            suite.SuiteId = _suites.Keys.Max() + 1;
+        }
+
+        private void ValidateSuite(SuiteViewModel suite)
         {
             //Blank names are not allowed
             if (string.IsNullOrEmpty(suite.Name)) throw new SuiteException(SuiteException.SuiteErrorType.NameBlank, "The suite name cannot be blank.");
@@ -52,7 +70,10 @@ namespace MvcTest.Services.Suites
                 .Any(kvp => kvp.Value.Name == suite.Name);
 
             if (anyNameConflicts) throw new SuiteException(SuiteException.SuiteErrorType.NameConflict, "The suite name conflicts with an existing suite.");
+        }
 
+        private void SetSuite(SuiteViewModel suite)
+        {
             _suites[suite.SuiteId] = suite;
         }
 

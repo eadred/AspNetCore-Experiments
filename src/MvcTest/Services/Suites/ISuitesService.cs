@@ -10,6 +10,8 @@ namespace MvcTest.Services.Suites
     {
         ICollection<SuiteViewModel> GetAllSuites();
 
+        void AddSuite(SuiteViewModel newSuite);
+
         void UpdateSuite(SuiteViewModel suite);
 
         void DeleteSuite(int suiteId);

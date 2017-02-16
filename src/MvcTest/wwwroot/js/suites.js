@@ -109,6 +109,27 @@
 
         self.suites = [];
 
+        self.addSuite = function () {
+            var newSuite = {
+                suiteId: -1,
+                name: 'New Suite',
+                models: []
+            }
+
+            var modal = $uibModal.open({
+                controller: 'EditDialogController',
+                controllerAs: 'dlgCtrl',
+                templateUrl: 'editSuiteDialog.html',
+                resolve: {
+                    suite: newSuite
+                }
+            });
+
+            doApiActionAfterDialog(modal, function (result) {
+                return $http.post('/api/Suites', result);
+            });
+        }
+
         self.editSuite = function (suite) {
             var modal = $uibModal.open({
                 controller: 'EditDialogController',
