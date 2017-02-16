@@ -75,8 +75,12 @@
         }
 
         self.save = function () {
-            $uibModalInstance.close(self.suite);
+            if (validate()) {
+                $uibModalInstance.close(self.suite);
+            }
         }
+
+        validate();
 
         function copySuite(s) {
             var copy = s.constructor();
@@ -87,6 +91,21 @@
         function copyProperties(source, dest) {
             for (var attr in source) {
                 if (source.hasOwnProperty(attr)) dest[attr] = source[attr];
+            }
+        }
+
+        function validate() {
+            if (self.suite.name == "") {
+                self.errorDetails = {
+                    hasError: true,
+                    errorDescription: 'Name cannot be blank'
+                }
+                return false;
+            } else {
+                self.errorDetails = {
+                    hasError: false
+                }
+                return true;
             }
         }
     }

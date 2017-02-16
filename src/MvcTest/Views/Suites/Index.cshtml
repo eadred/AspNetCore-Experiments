@@ -11,8 +11,11 @@
                 <h4 class="modal-title" id="editNew-label">Edit Suite</h4>
             </div>
             <div class="modal-body">
-                <label class="control-label" for="suiteName">Name</label>
-                <input type="text" class="form-control" id="suiteName" placeholder="Enter name" ng-model="dlgCtrl.suite.name">
+                <div class="form-group" data-ng-class="{'has-error' : dlgCtrl.errorDetails.hasError}">
+                    <label class="control-label" for="suiteName">Name</label>
+                    <input type="text" class="form-control" id="suiteName" placeholder="Enter name" ng-model="dlgCtrl.suite.name">
+                    <span class="help-block">{{dlgCtrl.errorDetails.errorDescription}}</span>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" ng-click="dlgCtrl.cancel()">Cancel</button>
