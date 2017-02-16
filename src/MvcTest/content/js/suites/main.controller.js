@@ -4,7 +4,8 @@
     angular
         .module('suites')
         .controller('MainController', ['$http', '$uibModal', MainController])
-        .controller('EditDialogController', EditDialogController);
+        .controller('EditDialogController', EditDialogController)
+        .controller('ErrorDialogController', ErrorDialogController);
 
     function MainController($http, $uibModal) {
         var self = this;
@@ -30,8 +31,9 @@
                     function (result) {
                         reload();
                     },
-                    function (error) {
-                        //Do something...
+                    function (errorResult) {
+                        var msg = (errorResult.data.errorMsg) ? errorResult.data.errorMsg : "Unknown error (" + errorResult.status + ")"
+                        showErrorDialog(msg);
                     }
                 );
         }
@@ -44,12 +46,22 @@
                     self.suites = response.data;
                 });
         }
+
+        function showErrorDialog(errorMsg) {
+            $uibModal.open({
+                controller: 'ErrorDialogController',
+                controllerAs: 'dlgCtrl',
+                templateUrl: 'editError.html',
+                resolve: {
+                    errorMsg: function () { return errorMsg; }
+                }
+            });
+        }
     }
 
     function EditDialogController($uibModalInstance, suite) {
         var self = this;
 
-        var originalSuite = suite;
         self.suite = copySuite(suite);
 
         self.cancel = function () {
@@ -57,8 +69,7 @@
         }
 
         self.save = function () {
-            copyProperties(self.suite, originalSuite);
-            $uibModalInstance.close(originalSuite);
+            $uibModalInstance.close(self.suite);
         }
 
         function copySuite(s) {
@@ -71,6 +82,16 @@
             for (var attr in source) {
                 if (source.hasOwnProperty(attr)) dest[attr] = source[attr];
             }
+        }
+    }
+
+    function ErrorDialogController($uibModalInstance, errorMsg) {
+        var self = this;
+
+        self.errorMsg = errorMsg;
+
+        self.dismiss = function () {
+            $uibModalInstance.dismiss();
         }
     }
 

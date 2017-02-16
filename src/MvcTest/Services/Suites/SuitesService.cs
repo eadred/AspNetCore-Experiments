@@ -43,6 +43,13 @@ namespace MvcTest.Services.Suites
 
         public void UpdateSuite(SuiteViewModel suite)
         {
+            //Check for conflicting names
+            bool anyNameConflicts = _suites
+                .Where(kvp => kvp.Key != suite.SuiteId)
+                .Any(kvp => kvp.Value.Name == suite.Name);
+
+            if (anyNameConflicts) throw new SuiteException("The suite name conflicts with an existing suite.");
+
             _suites[suite.SuiteId] = suite;
         }
     }

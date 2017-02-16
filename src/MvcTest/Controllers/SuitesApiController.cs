@@ -41,7 +41,15 @@ namespace MvcTest.Controllers
         [Route("{suiteId}")]
         public IActionResult EditSuite(int suiteId, [FromBody] SuiteViewModel suite)
         {
-            _suitesSvc.UpdateSuite(suite);
+            try
+            {
+                _suitesSvc.UpdateSuite(suite);
+            }
+            catch (SuiteException ex)
+            {
+                return StatusCode((int)System.Net.HttpStatusCode.Conflict, new { errorMsg = ex.Message });
+            }
+
             return Ok();
         }
 
