@@ -4,6 +4,23 @@
 
 <div data-ng-app="suites" data-ng-controller="MainController as ctrl">
 
+    <script type="text/ng-template" id="editSuiteDialog.html">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" ng-click="dlgCtrl.cancel()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="editNew-label">Edit Suite</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" for="suiteName">Name</label>
+                <input type="text" class="form-control" id="suiteName" placeholder="Enter name" ng-model="dlgCtrl.suite.name">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" ng-click="dlgCtrl.cancel()">Cancel</button>
+                <button type="button" class="btn btn-primary" ng-click="dlgCtrl.save()">Save</button>
+            </div>
+        </div>
+    </script>
+
     <div class="container-fluid">
         <div class="row">
             <div class="page-header">
@@ -22,7 +39,7 @@
             <div class="row suite-header">
                 <h3 class="col-sm-8">{{suite.name}}</h3>
                 <div class="btn-group pull-right suite-buttons" role="group" aria-label="...">
-                    <button type="button" class="btn btn-default">
+                    <button type="button" class="btn btn-default" ng-click="ctrl.editSuite(suite)">
                         <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                     </button>
                     <button type="button" class="btn btn-default">
