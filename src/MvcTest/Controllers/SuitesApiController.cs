@@ -10,6 +10,7 @@ using MvcTest.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MvcTest.Services.Suites;
+using System.Net;
 
 namespace MvcTest.Controllers
 {
@@ -47,7 +48,20 @@ namespace MvcTest.Controllers
             }
             catch (SuiteException ex)
             {
-                return StatusCode((int)System.Net.HttpStatusCode.Conflict, new { errorMsg = ex.Message });
+                HttpStatusCode statusCode;
+                switch (ex.ErrorType)
+                {
+                    case SuiteException.SuiteErrorType.NameBlank:
+                        statusCode = HttpStatusCode.BadRequest;
+                        break;
+                    case SuiteException.SuiteErrorType.NameConflict:
+                        statusCode = HttpStatusCode.Conflict;
+                        break;
+                    default:
+                        statusCode = HttpStatusCode.BadRequest;
+                        break;
+                }
+                return StatusCode((int)statusCode, new { errorMsg = ex.Message });
             }
 
             return Ok();

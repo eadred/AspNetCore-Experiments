@@ -43,12 +43,15 @@ namespace MvcTest.Services.Suites
 
         public void UpdateSuite(SuiteViewModel suite)
         {
+            //Blank names are not allowed
+            if (string.IsNullOrEmpty(suite.Name)) throw new SuiteException(SuiteException.SuiteErrorType.NameBlank, "The suite name cannot be blank.");
+
             //Check for conflicting names
             bool anyNameConflicts = _suites
                 .Where(kvp => kvp.Key != suite.SuiteId)
                 .Any(kvp => kvp.Value.Name == suite.Name);
 
-            if (anyNameConflicts) throw new SuiteException("The suite name conflicts with an existing suite.");
+            if (anyNameConflicts) throw new SuiteException(SuiteException.SuiteErrorType.NameConflict, "The suite name conflicts with an existing suite.");
 
             _suites[suite.SuiteId] = suite;
         }

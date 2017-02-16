@@ -7,8 +7,22 @@ namespace MvcTest.Services.Suites
 {
     public class SuiteException : Exception
     {
-        public SuiteException(string message) : base(message) { }
+        public SuiteErrorType ErrorType { get; private set; }
 
-        public SuiteException(string message, Exception innerException) : base(message, innerException) { }
+        public SuiteException(SuiteErrorType errorType, string message) : base(message)
+        {
+            ErrorType = errorType;
+        }
+
+        public SuiteException(SuiteErrorType errorType, string message, Exception innerException) : base(message, innerException)
+        {
+            ErrorType = errorType;
+        }
+
+        public enum SuiteErrorType
+        {
+            NameBlank,
+            NameConflict
+        }
     }
 }
