@@ -27,10 +27,19 @@
                 }
             });
 
-            modal.result.then(
-                function (result) {
-                    console.log(result);
-                });
+            modal.result
+                .then(
+                    function (result) {
+                        return $http.put('/api/Suites/' + result.suiteId, result);
+                    })
+                .then(
+                    function (result) {
+                        reload();
+                    },
+                    function (error) {
+                        //Do something...
+                    }
+                );
         }
 
         reload();

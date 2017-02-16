@@ -29,16 +29,20 @@ namespace MvcTest.Controllers
             _allUsers = new Lazy<ApplicationUser[]>(() => _userManager.Users.ToArray());
         }
 
+        [HttpGet]
         public async Task<ICollection<SuiteViewModel>> Index()
         {
             ICollection<SuiteViewModel> suites = _suitesSvc.GetAllSuites();
 
             return await Task.FromResult(suites);
+        }
 
-
-            //var allSuites = await _context.Suites.ToListAsync();
-
-            //return allSuites.Select(SuiteToViewModel).ToArray();
+        [HttpPut]
+        [Route("{suiteId}")]
+        public IActionResult EditSuite(int suiteId, [FromBody] SuiteViewModel suite)
+        {
+            _suitesSvc.UpdateSuite(suite);
+            return Ok();
         }
 
         private SuiteViewModel SuiteToViewModel(Suite suite)

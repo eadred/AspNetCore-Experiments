@@ -8,7 +8,7 @@ namespace MvcTest.Services.Suites
 {
     public class SuitesService : ISuitesService
     {
-        private List<SuiteViewModel> _suites;
+        private Dictionary<int, SuiteViewModel> _suites;
 
         public SuitesService()
         {
@@ -33,12 +33,17 @@ namespace MvcTest.Services.Suites
                         new Model { ModelId = 3, Name = "M2B" }
                     }
                 }
-            }.ToList();
+            }.ToDictionary(s => s.SuiteId);
         }
 
         public ICollection<SuiteViewModel> GetAllSuites()
         {
-            return _suites;
+            return _suites.Values.OrderBy(s => s.Name).ToList();
+        }
+
+        public void UpdateSuite(SuiteViewModel suite)
+        {
+            _suites[suite.SuiteId] = suite;
         }
     }
 }

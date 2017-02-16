@@ -9,5 +9,7 @@ namespace MvcTest.Services.Suites
     public interface ISuitesService
     {
         ICollection<SuiteViewModel> GetAllSuites();
+
+        void UpdateSuite(SuiteViewModel suite);
     }
 }
