@@ -35,10 +35,10 @@
         .module('suites')
         .controller('EditDialogController', EditDialogController);
 
-    function EditDialogController($uibModalInstance, suite) {
+    function EditDialogController($uibModalInstance, editItem) {
         var self = this;
 
-        self.suite = copySuite(suite);
+        self.editItem = copyEditItem(editItem);
 
         self.cancel = function () {
             $uibModalInstance.dismiss();
@@ -46,15 +46,15 @@
 
         self.save = function () {
             if (validate()) {
-                $uibModalInstance.close(self.suite);
+                $uibModalInstance.close(self.editItem);
             }
         }
 
         validate();
 
-        function copySuite(s) {
-            var copy = s.constructor();
-            copyProperties(s, copy);
+        function copyEditItem(item) {
+            var copy = item.constructor();
+            copyProperties(item, copy);
             return copy;
         }
 
@@ -65,7 +65,7 @@
         }
 
         function validate() {
-            if (self.suite.name == "") {
+            if (self.editItem.name == "") {
                 self.errorDetails = {
                     hasError: true,
                     errorDescription: 'Name cannot be blank'
@@ -121,12 +121,32 @@
                 controllerAs: 'dlgCtrl',
                 templateUrl: 'editSuiteDialog.html',
                 resolve: {
-                    suite: newSuite
+                    editItem: newSuite
                 }
             });
 
             doApiActionAfterDialog(modal, function (result) {
                 return $http.post('/api/Suites', result);
+            });
+        }
+
+        self.addModel = function (parentSuiteId) {
+            var newModel = {
+                modelId: -1,
+                name: 'New Model'
+            }
+
+            var modal = $uibModal.open({
+                controller: 'EditDialogController',
+                controllerAs: 'dlgCtrl',
+                templateUrl: 'editModelDialog.html',
+                resolve: {
+                    editItem: newModel
+                }
+            });
+
+            doApiActionAfterDialog(modal, function (result) {
+                return $http.post('/api/Suites/' + parentSuiteId + '/Models', result);
             });
         }
 
@@ -136,12 +156,27 @@
                 controllerAs: 'dlgCtrl',
                 templateUrl: 'editSuiteDialog.html',
                 resolve: {
-                    suite: suite
+                    editItem: suite
                 }
             });
 
-            doApiActionAfterDialog(modal, function (result) {
-                return $http.put('/api/Suites/' + result.suiteId, result);
+            doApiActionAfterDialog(modal, function (editedSuite) {
+                return $http.put('/api/Suites/' + editedSuite.suiteId, editedSuite);
+            });
+        }
+
+        self.editModel = function (parentSuiteId, model) {
+            var modal = $uibModal.open({
+                controller: 'EditDialogController',
+                controllerAs: 'dlgCtrl',
+                templateUrl: 'editModelDialog.html',
+                resolve: {
+                    editItem: model
+                }
+            });
+
+            doApiActionAfterDialog(modal, function (editedModel) {
+                return $http.put('/api/Suites/' + parentSuiteId + '/Models/' + editedModel.modelId, editedModel);
             });
         }
 
@@ -162,6 +197,26 @@
 
             doApiActionAfterDialog(modal, function () {
                 return $http.delete('/api/Suites/' + suite.suiteId);
+            });
+        }
+
+        self.deleteModel = function (parentSuiteId, model) {
+            var modal = $uibModal.open({
+                controller: 'ConfirmDialogController',
+                controllerAs: 'dlgCtrl',
+                templateUrl: 'confirmDialog.html',
+                resolve: {
+                    options: {
+                        title: 'Confirm deletion',
+                        content: 'Are you sure you want to delete model ' + model.name + '?',
+                        cancelBtnText: 'Don\'t delete',
+                        acceptBtnText: 'Delete'
+                    }
+                }
+            });
+
+            doApiActionAfterDialog(modal, function () {
+                return $http.delete('/api/Suites/' + parentSuiteId + '/Models/' + model.modelId);
             });
         }
 

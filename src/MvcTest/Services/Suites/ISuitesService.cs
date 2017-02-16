@@ -12,8 +12,14 @@ namespace MvcTest.Services.Suites
 
         void AddSuite(SuiteViewModel newSuite);
 
+        void AddModel(int suiteId, Model newModel);
+
         void UpdateSuite(SuiteViewModel suite);
 
+        void UpdateModel(int suiteId, Model model);
+
         void DeleteSuite(int suiteId);
+
+        void DeleteModel(int suiteId, int modelId);
     }
 }

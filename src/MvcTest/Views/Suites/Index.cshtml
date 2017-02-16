@@ -13,7 +13,27 @@
             <div class="modal-body">
                 <div class="form-group" data-ng-class="{'has-error' : dlgCtrl.errorDetails.hasError}">
                     <label class="control-label" for="suiteName">Name</label>
-                    <input type="text" class="form-control" id="suiteName" placeholder="Enter name" ng-model="dlgCtrl.suite.name">
+                    <input type="text" class="form-control" id="suiteName" placeholder="Enter name" ng-model="dlgCtrl.editItem.name">
+                    <span class="help-block">{{dlgCtrl.errorDetails.errorDescription}}</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" ng-click="dlgCtrl.cancel()">Cancel</button>
+                <button type="button" class="btn btn-primary" ng-click="dlgCtrl.save()">Save</button>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/ng-template" id="editModelDialog.html">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" ng-click="dlgCtrl.cancel()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="editNew-label">Edit Model</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group" data-ng-class="{'has-error' : dlgCtrl.errorDetails.hasError}">
+                    <label class="control-label" for="modelName">Name</label>
+                    <input type="text" class="form-control" id="modelName" placeholder="Enter name" ng-model="dlgCtrl.editItem.name">
                     <span class="help-block">{{dlgCtrl.errorDetails.errorDescription}}</span>
                 </div>
             </div>
@@ -85,7 +105,7 @@
                 <div class="container-fluid suite-models">
                     <div class="row">
                         <b>Models</b>
-                        <button type="button" class="btn btn-xs btn-default suite-buttons">
+                        <button type="button" class="btn btn-xs btn-default suite-buttons" ng-click="ctrl.addModel(suite.suiteId)">
                             <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                         </button>
                     </div>
@@ -97,10 +117,10 @@
                                     <td class="col-sm-8">{{model.name}}</td>
                                     <td>
                                         <div class="btn-group pull-right suite-model-buttons" role="group" aria-label="...">
-                                            <button type="button" class="btn btn-default">
+                                            <button type="button" class="btn btn-default" ng-click="ctrl.editModel(suite.suiteId, model)">
                                                 <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                                             </button>
-                                            <button type="button" class="btn btn-default">
+                                            <button type="button" class="btn btn-default" ng-click="ctrl.deleteModel(suite.suiteId, model)">
                                                 <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                                             </button>
                                         </div>

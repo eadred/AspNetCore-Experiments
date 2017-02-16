@@ -44,6 +44,13 @@ namespace MvcTest.Controllers
             return UseSuitesService(() => _suitesSvc.AddSuite(suite));
         }
 
+        [HttpPost]
+        [Route("{suiteId}/Models")]
+        public IActionResult AddModel(int suiteId, [FromBody] Model model)
+        {
+            return UseSuitesService(() => _suitesSvc.AddModel(suiteId, model));
+        }
+
         [HttpPut]
         [Route("{suiteId}")]
         public IActionResult EditSuite(int suiteId, [FromBody] SuiteViewModel suite)
@@ -51,11 +58,25 @@ namespace MvcTest.Controllers
             return UseSuitesService(() => _suitesSvc.UpdateSuite(suite));
         }
 
+        [HttpPut]
+        [Route("{suiteId}/Models/{modelId}")]
+        public IActionResult EditModel(int suiteId, int modelId, [FromBody] Model model)
+        {
+            return UseSuitesService(() => _suitesSvc.UpdateModel(suiteId, model));
+        }
+
         [HttpDelete]
         [Route("{suiteId}")]
         public IActionResult DeleteSuite(int suiteId)
         {
             return UseSuitesService(() => _suitesSvc.DeleteSuite(suiteId));
+        }
+
+        [HttpDelete]
+        [Route("{suiteId}/Models/{modelId}")]
+        public IActionResult DeleteModel(int suiteId, int modelId)
+        {
+            return UseSuitesService(() => _suitesSvc.DeleteModel(suiteId, modelId));
         }
 
         private IActionResult UseSuitesService(Action useService)

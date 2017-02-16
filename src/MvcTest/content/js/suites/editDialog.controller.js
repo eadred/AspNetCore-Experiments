@@ -5,10 +5,10 @@
         .module('suites')
         .controller('EditDialogController', EditDialogController);
 
-    function EditDialogController($uibModalInstance, suite) {
+    function EditDialogController($uibModalInstance, editItem) {
         var self = this;
 
-        self.suite = copySuite(suite);
+        self.editItem = copyEditItem(editItem);
 
         self.cancel = function () {
             $uibModalInstance.dismiss();
@@ -16,15 +16,15 @@
 
         self.save = function () {
             if (validate()) {
-                $uibModalInstance.close(self.suite);
+                $uibModalInstance.close(self.editItem);
             }
         }
 
         validate();
 
-        function copySuite(s) {
-            var copy = s.constructor();
-            copyProperties(s, copy);
+        function copyEditItem(item) {
+            var copy = item.constructor();
+            copyProperties(item, copy);
             return copy;
         }
 
@@ -35,7 +35,7 @@
         }
 
         function validate() {
-            if (self.suite.name == "") {
+            if (self.editItem.name == "") {
                 self.errorDetails = {
                     hasError: true,
                     errorDescription: 'Name cannot be blank'
