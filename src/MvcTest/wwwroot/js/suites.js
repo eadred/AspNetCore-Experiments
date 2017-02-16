@@ -115,24 +115,13 @@
                 controllerAs: 'dlgCtrl',
                 templateUrl: 'editSuiteDialog.html',
                 resolve: {
-                    suite: function () { return suite; }
+                    suite: suite
                 }
             });
 
-            modal.result
-                .then(
-                    function (result) {
-                        return $http.put('/api/Suites/' + result.suiteId, result);
-                    })
-                .then(
-                    function (result) {
-                        reload();
-                    },
-                    function (errorResult) {
-                        var msg = (errorResult.data.errorMsg) ? errorResult.data.errorMsg : "Unknown error (" + errorResult.status + ")"
-                        showErrorDialog(msg);
-                    }
-                );
+            doApiActionAfterDialog(modal, function (result) {
+                return $http.put('/api/Suites/' + result.suiteId, result);
+            });
         }
 
         self.deleteSuite = function (suite) {
@@ -141,30 +130,18 @@
                 controllerAs: 'dlgCtrl',
                 templateUrl: 'confirmDialog.html',
                 resolve: {
-                    options: function () {
-                        return {
+                    options: {
                             title: 'Confirm deletion',
                             content: 'Are you sure you want to delete suite ' + suite.name + '?',
                             cancelBtnText: 'Don\'t delete',
                             acceptBtnText: 'Delete'
-                        }; }
+                        }
                 }
             });
 
-            modal.result
-                .then(
-                    function () {
-                        return $http.delete('/api/Suites/' + suite.suiteId);
-                    })
-                .then(
-                    function (result) {
-                        reload();
-                    },
-                    function (errorResult) {
-                        var msg = (errorResult.data.errorMsg) ? errorResult.data.errorMsg : "Unknown error (" + errorResult.status + ")"
-                        showErrorDialog(msg);
-                    }
-                );
+            doApiActionAfterDialog(modal, function () {
+                return $http.delete('/api/Suites/' + suite.suiteId);
+            });
         }
 
         reload();
@@ -185,6 +162,20 @@
                     errorMsg: function () { return errorMsg; }
                 }
             });
+        }
+
+        function doApiActionAfterDialog(modalInstance, apiAction) {
+            modalInstance.result
+                .then(apiAction)
+                .then(
+                    function (apiResult) {
+                        reload();
+                    },
+                    function (apiErrorResult) {
+                        var msg = (apiErrorResult.data.errorMsg) ? apiErrorResult.data.errorMsg : "Unknown error (" + apiErrorResult.status + ")"
+                        showErrorDialog(msg);
+                    }
+                );
         }
     }
 })();
