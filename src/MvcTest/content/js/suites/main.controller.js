@@ -18,7 +18,7 @@
             }
 
             var modal = $uibModal.open({
-                controller: 'EditDialogController',
+                controller: 'EditSuiteDialogController',
                 controllerAs: 'dlgCtrl',
                 templateUrl: 'editSuiteDialog.html',
                 resolve: {
@@ -38,7 +38,7 @@
             }
 
             var modal = $uibModal.open({
-                controller: 'EditDialogController',
+                controller: 'EditModelDialogController',
                 controllerAs: 'dlgCtrl',
                 templateUrl: 'editModelDialog.html',
                 resolve: {
@@ -53,7 +53,7 @@
 
         self.editSuite = function (suite) {
             var modal = $uibModal.open({
-                controller: 'EditDialogController',
+                controller: 'EditSuiteDialogController',
                 controllerAs: 'dlgCtrl',
                 templateUrl: 'editSuiteDialog.html',
                 resolve: {
@@ -68,7 +68,7 @@
 
         self.editModel = function (parentSuiteId, model) {
             var modal = $uibModal.open({
-                controller: 'EditDialogController',
+                controller: 'EditModelDialogController',
                 controllerAs: 'dlgCtrl',
                 templateUrl: 'editModelDialog.html',
                 resolve: {

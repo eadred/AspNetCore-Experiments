@@ -33,9 +33,61 @@
 
     angular
         .module('suites')
-        .controller('EditDialogController', EditDialogController);
+        .controller('EditModelDialogController', EditModelDialogController);
 
-    function EditDialogController($uibModalInstance, editItem) {
+    function EditModelDialogController($uibModalInstance, editItem) {
+        var self = this;
+
+        self.editItem = copyEditItem(editItem);
+
+        self.cancel = function () {
+            $uibModalInstance.dismiss();
+        }
+
+        self.save = function () {
+            if (validate()) {
+                $uibModalInstance.close(self.editItem);
+            }
+        }
+
+        validate();
+
+        function copyEditItem(item) {
+            var copy = item.constructor();
+            copyProperties(item, copy);
+            return copy;
+        }
+
+        function copyProperties(source, dest) {
+            for (var attr in source) {
+                if (source.hasOwnProperty(attr)) dest[attr] = source[attr];
+            }
+        }
+
+        function validate() {
+            if (self.editItem.name == "") {
+                self.errorDetails = {
+                    hasError: true,
+                    errorDescription: 'Name cannot be blank'
+                }
+                return false;
+            } else {
+                self.errorDetails = {
+                    hasError: false
+                }
+                return true;
+            }
+        }
+    }
+})();
+(function () {
+    'use strict';
+
+    angular
+        .module('suites')
+        .controller('EditSuiteDialogController', EditSuiteDialogController);
+
+    function EditSuiteDialogController($uibModalInstance, editItem) {
         var self = this;
 
         self.editItem = copyEditItem(editItem);
@@ -117,7 +169,7 @@
             }
 
             var modal = $uibModal.open({
-                controller: 'EditDialogController',
+                controller: 'EditSuiteDialogController',
                 controllerAs: 'dlgCtrl',
                 templateUrl: 'editSuiteDialog.html',
                 resolve: {
@@ -137,7 +189,7 @@
             }
 
             var modal = $uibModal.open({
-                controller: 'EditDialogController',
+                controller: 'EditModelDialogController',
                 controllerAs: 'dlgCtrl',
                 templateUrl: 'editModelDialog.html',
                 resolve: {
@@ -152,7 +204,7 @@
 
         self.editSuite = function (suite) {
             var modal = $uibModal.open({
-                controller: 'EditDialogController',
+                controller: 'EditSuiteDialogController',
                 controllerAs: 'dlgCtrl',
                 templateUrl: 'editSuiteDialog.html',
                 resolve: {
@@ -167,7 +219,7 @@
 
         self.editModel = function (parentSuiteId, model) {
             var modal = $uibModal.open({
-                controller: 'EditDialogController',
+                controller: 'EditModelDialogController',
                 controllerAs: 'dlgCtrl',
                 templateUrl: 'editModelDialog.html',
                 resolve: {

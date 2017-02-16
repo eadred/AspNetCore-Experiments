@@ -3,9 +3,9 @@
 
     angular
         .module('suites')
-        .controller('EditDialogController', EditDialogController);
+        .controller('EditSuiteDialogController', EditSuiteDialogController);
 
-    function EditDialogController($uibModalInstance, editItem) {
+    function EditSuiteDialogController($uibModalInstance, editItem) {
         var self = this;
 
         self.editItem = copyEditItem(editItem);
