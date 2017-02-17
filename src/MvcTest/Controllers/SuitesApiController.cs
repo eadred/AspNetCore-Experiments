@@ -70,7 +70,7 @@ namespace MvcTest.Controllers
 
         [HttpPut]
         [Route("{suiteId}/Models/{modelId}")]
-        public IActionResult EditModel(int suiteId, int modelId, [ModelBinder(BinderType = typeof(FormItemModelBinder))] Model model, IFormFile logoFile)
+        public IActionResult EditModel(int suiteId, int modelId, [FormItem(ItemName = "model")] Model editedModel, IFormFile logoFile)
         {
             if (logoFile != null)
             {
@@ -80,7 +80,7 @@ namespace MvcTest.Controllers
 
             return UseSuitesService(() =>
             {
-                _suitesSvc.UpdateModel(suiteId, model);
+                _suitesSvc.UpdateModel(suiteId, editedModel);
 
                 if (logoFile != null)
                 {

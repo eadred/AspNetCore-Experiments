@@ -16,6 +16,7 @@ using MvcTest.Services.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using MvcTest.Services.Suites;
 using MvcTest.Services.Files;
+using MvcTest.Services.ModelBinding;
 
 namespace MvcTest
 {
@@ -65,7 +66,10 @@ namespace MvcTest
                 });
             });
 
-            services.AddMvc();
+            services.AddMvc(options =>
+            {
+                options.Conventions.Add(new FormItemModelConvention());
+            });
 
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
