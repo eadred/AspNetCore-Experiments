@@ -12,5 +12,9 @@ namespace MvcTest.Services.Files
         void SaveModelLogo(int suiteId, int modelId, IFormFile logoFile);
 
         FileStream GetModelLogo(int suiteId, int modelId);
+
+        void DeleteModelLogo(int suiteId, int modelId);
+
+        void DeleteModelLogos(int suiteId);
     }
 }

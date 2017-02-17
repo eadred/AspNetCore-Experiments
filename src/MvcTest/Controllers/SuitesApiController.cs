@@ -83,14 +83,22 @@ namespace MvcTest.Controllers
         [Route("{suiteId}")]
         public IActionResult DeleteSuite(int suiteId)
         {
-            return UseSuitesService(() => _suitesSvc.DeleteSuite(suiteId));
+            return UseSuitesService(() =>
+            {
+                _suitesSvc.DeleteSuite(suiteId);
+                _fileService.DeleteModelLogos(suiteId);
+            });
         }
 
         [HttpDelete]
         [Route("{suiteId}/Models/{modelId}")]
         public IActionResult DeleteModel(int suiteId, int modelId)
         {
-            return UseSuitesService(() => _suitesSvc.DeleteModel(suiteId, modelId));
+            return UseSuitesService(() =>
+            {
+                _suitesSvc.DeleteModel(suiteId, modelId);
+                _fileService.DeleteModelLogo(suiteId, modelId);
+            });
         }
 
         [HttpGet]

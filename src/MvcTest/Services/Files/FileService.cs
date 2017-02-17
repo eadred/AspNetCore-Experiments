@@ -48,12 +48,37 @@ namespace MvcTest.Services.Files
             return File.OpenRead(path);
         }
 
+        public void DeleteModelLogo(int suiteId, int modelId)
+        {
+            var path = GetLogoFilePath(suiteId, modelId, false);
+            if (File.Exists(path))
+            {
+                Directory.Delete(Path.GetDirectoryName(path), true);
+            }
+        }
+
+        public void DeleteModelLogos(int suiteId)
+        {
+            var directory = GetSuiteLogosDirectoryPath(suiteId, false);
+            if (Directory.Exists(directory))
+            {
+                Directory.Delete(directory, true);
+            }
+        }
+
         private string LogoFilesRootPath { get; set; }
 
-        private string GetLogoFilePath(int suiteId, int modelId, bool createDirectories)
+        private string GetSuiteLogosDirectoryPath(int suiteId, bool createDirectories)
         {
             var suiteDir = Path.Combine(LogoFilesRootPath, $"Suite{suiteId}");
             if (createDirectories && !Directory.Exists(suiteDir)) Directory.CreateDirectory(suiteDir);
+
+            return suiteDir;
+        }
+
+        private string GetLogoFilePath(int suiteId, int modelId, bool createDirectories)
+        {
+            var suiteDir = GetSuiteLogosDirectoryPath(suiteId, createDirectories);
 
             var modelDir = Path.Combine(suiteDir, $"Model{modelId}");
             if (createDirectories && !Directory.Exists(modelDir)) Directory.CreateDirectory(modelDir);
