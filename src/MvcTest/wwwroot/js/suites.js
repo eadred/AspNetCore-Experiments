@@ -35,7 +35,7 @@
         .module('suites')
         .controller('EditModelDialogController', EditModelDialogController);
 
-    function EditModelDialogController($uibModalInstance, editItem) {
+    function EditModelDialogController($scope, $uibModalInstance, editItem) {
         var self = this;
 
         self.editItem = copyEditItem(editItem);
@@ -46,8 +46,25 @@
 
         self.save = function () {
             if (validate()) {
-                $uibModalInstance.close(self.editItem);
+                $uibModalInstance.close({
+                    editedModel :self.editItem,
+                    logoFile: self.logoFile
+                });
             }
+        }
+
+        self.fileSelected = function (files) {
+            if (files.length > 0) {
+                self.logoFile = files[0];
+            } else {
+                delete self.logoFile;
+            }
+
+            validate();
+
+            //Because this method is called fro mplain vanilla onchange event handler
+            //we need to tell ng to apply the changes
+            $scope.$apply();
         }
 
         validate();
@@ -65,18 +82,26 @@
         }
 
         function validate() {
-            if (self.editItem.name == "") {
-                self.errorDetails = {
-                    hasError: true,
-                    errorDescription: 'Name cannot be blank'
-                }
-                return false;
-            } else {
-                self.errorDetails = {
-                    hasError: false
-                }
-                return true;
+            var valid = true;
+            var errorDetails = {
+                hasNameError: false,
+                hasLogoError: false
             }
+
+            if (self.editItem.name == "") {
+                errorDetails.hasNameError = true;
+                errorDetails.nameErrorDescription = 'Name cannot be blank';
+                valid = false;
+            }
+
+            if (self.logoFile && !self.logoFile.type.match('image/.*')) {
+                errorDetails.hasLogoError = true;
+                errorDetails.logoErrorDescription = 'Logo must be an image';
+                valid = false;
+            }
+
+            self.errorDetails = errorDetails;
+            return valid;
         }
     }
 })();
@@ -177,8 +202,8 @@
                 }
             });
 
-            doApiActionAfterDialog(modal, function (result) {
-                return $http.post('/api/Suites', result);
+            doApiActionAfterDialog(modal, function (newSuite) {
+                return $http.post('/api/Suites', newSuite);
             });
         }
 
@@ -197,8 +222,9 @@
                 }
             });
 
-            doApiActionAfterDialog(modal, function (result) {
-                return $http.post('/api/Suites/' + parentSuiteId + '/Models', result);
+            doApiActionAfterDialog(modal, function (newModelDetails) {
+                var newModel = newModelDetails.editedModel;
+                return $http.post('/api/Suites/' + parentSuiteId + '/Models', newModel);
             });
         }
 
@@ -227,8 +253,20 @@
                 }
             });
 
-            doApiActionAfterDialog(modal, function (editedModel) {
-                return $http.put('/api/Suites/' + parentSuiteId + '/Models/' + editedModel.modelId, editedModel);
+            doApiActionAfterDialog(modal, function (editedModelDetails) {
+                var editedModel = editedModelDetails.editedModel;
+
+                var fd = new FormData();
+                fd.append('model', JSON.stringify(editedModel));
+                fd.append('logoFile', editedModelDetails.logoFile);
+
+                return $http.put(
+                    '/api/Suites/' + parentSuiteId + '/Models/' + editedModel.modelId,
+                    fd,
+                    {
+                        headers: { 'Content-Type': undefined },
+                        transformRequest: angular.identity
+                    });
             });
         }
 
@@ -272,12 +310,25 @@
             });
         }
 
+        self.modelLogoSource = function (suiteId, model) {
+            //Add the logo nonce as a random query string so we force reload
+            return '/api/Suites/' + suiteId + '/Models/' + model.modelId + '/logo' + '?r=' + model.logoNonce;
+        }
+
         reload();
 
         function reload() {
             $http.get('/api/Suites')
                 .then(function (response) {
                     self.suites = response.data;
+
+                    //Refresh all models' logo nonces so that the images are reloaded every time the suites are reloaded
+                    for (var suiteIdx = 0; suiteIdx < self.suites.length; suiteIdx++) {
+                        var suite = self.suites[suiteIdx];
+                        for (var modelIdx = 0; modelIdx < suite.models.length; modelIdx++) {
+                            suite.models[modelIdx].logoNonce = Math.round(Math.random() * 999999);
+                        }
+                    }
                 });
         }
 

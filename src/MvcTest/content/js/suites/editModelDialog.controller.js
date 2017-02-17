@@ -5,7 +5,7 @@
         .module('suites')
         .controller('EditModelDialogController', EditModelDialogController);
 
-    function EditModelDialogController($uibModalInstance, editItem) {
+    function EditModelDialogController($scope, $uibModalInstance, editItem) {
         var self = this;
 
         self.editItem = copyEditItem(editItem);
@@ -16,8 +16,25 @@
 
         self.save = function () {
             if (validate()) {
-                $uibModalInstance.close(self.editItem);
+                $uibModalInstance.close({
+                    editedModel :self.editItem,
+                    logoFile: self.logoFile
+                });
             }
+        }
+
+        self.fileSelected = function (files) {
+            if (files.length > 0) {
+                self.logoFile = files[0];
+            } else {
+                delete self.logoFile;
+            }
+
+            validate();
+
+            //Because this method is called fro mplain vanilla onchange event handler
+            //we need to tell ng to apply the changes
+            $scope.$apply();
         }
 
         validate();
@@ -35,18 +52,26 @@
         }
 
         function validate() {
-            if (self.editItem.name == "") {
-                self.errorDetails = {
-                    hasError: true,
-                    errorDescription: 'Name cannot be blank'
-                }
-                return false;
-            } else {
-                self.errorDetails = {
-                    hasError: false
-                }
-                return true;
+            var valid = true;
+            var errorDetails = {
+                hasNameError: false,
+                hasLogoError: false
             }
+
+            if (self.editItem.name == "") {
+                errorDetails.hasNameError = true;
+                errorDetails.nameErrorDescription = 'Name cannot be blank';
+                valid = false;
+            }
+
+            if (self.logoFile && !self.logoFile.type.match('image/.*')) {
+                errorDetails.hasLogoError = true;
+                errorDetails.logoErrorDescription = 'Logo must be an image';
+                valid = false;
+            }
+
+            self.errorDetails = errorDetails;
+            return valid;
         }
     }
 })();

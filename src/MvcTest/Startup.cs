@@ -15,6 +15,7 @@ using MvcTest.Services;
 using MvcTest.Services.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using MvcTest.Services.Suites;
+using MvcTest.Services.Files;
 
 namespace MvcTest
 {
@@ -72,6 +73,7 @@ namespace MvcTest
 
             services.AddSingleton<IAuthorizationHandler, RoleAuthHandler>();
             services.AddSingleton<ISuitesService, SuitesService>();
+            services.AddSingleton<IFileService, FileService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

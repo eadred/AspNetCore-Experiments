@@ -31,10 +31,18 @@
                 <h4 class="modal-title" id="editNew-label">Edit Model</h4>
             </div>
             <div class="modal-body">
-                <div class="form-group" data-ng-class="{'has-error' : dlgCtrl.errorDetails.hasError}">
+                <div class="form-group" data-ng-class="{'has-error' : dlgCtrl.errorDetails.hasNameError}">
                     <label class="control-label" for="modelName">Name</label>
                     <input type="text" class="form-control" id="modelName" placeholder="Enter name" ng-model="dlgCtrl.editItem.name">
-                    <span class="help-block">{{dlgCtrl.errorDetails.errorDescription}}</span>
+                    <span class="help-block">{{dlgCtrl.errorDetails.nameErrorDescription}}</span>
+                </div>
+                <div class="form-group" data-ng-class="{'has-error' : dlgCtrl.errorDetails.hasLogoError}">                    
+                    <label class="btn btn-default btn-file">
+                        Change Logo <input type="file" style="display: none;" id="logoPicker" onchange="angular.element(this).scope().dlgCtrl.fileSelected(this.files)">
+                    </label>
+                    <span class="logo-filename">{{dlgCtrl.logoFile ? dlgCtrl.logoFile.name : ''}}</span>
+                    
+                    <span class="help-block">{{dlgCtrl.errorDetails.logoErrorDescription}}</span>
                 </div>
             </div>
             <div class="modal-footer">
@@ -114,7 +122,10 @@
 
                             <tbody>
                                 <tr data-ng-repeat="model in suite.models">
-                                    <td class="col-sm-8">{{model.name}}</td>
+                                    <td class="col-sm-8">
+                                        <img ng-src="{{ctrl.modelLogoSource(suite.suiteId, model)}}" width="100" />
+                                        <span>{{model.name}}</span>
+                                    </td>
                                     <td>
                                         <div class="btn-group pull-right suite-model-buttons" role="group" aria-label="...">
                                             <button type="button" class="btn btn-default" ng-click="ctrl.editModel(suite.suiteId, model)">

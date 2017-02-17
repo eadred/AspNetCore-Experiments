@@ -11,6 +11,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MvcTest.Services.Suites;
 using System.Net;
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
+using Newtonsoft.Json;
+using MvcTest.Services.Files;
 
 namespace MvcTest.Controllers
 {
@@ -20,13 +24,18 @@ namespace MvcTest.Controllers
     {
         private readonly ISuitesService _suitesSvc;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IFileService _fileService;
 
         private readonly Lazy<ApplicationUser[]> _allUsers;
 
-        public SuitesApiController(ISuitesService suitesSvc, UserManager<ApplicationUser> userManager)
+        public SuitesApiController(
+            ISuitesService suitesSvc,
+            UserManager<ApplicationUser> userManager,
+            IFileService fileService)
         {
             _suitesSvc = suitesSvc;
             _userManager = userManager;
+            _fileService = fileService;
             _allUsers = new Lazy<ApplicationUser[]>(() => _userManager.Users.ToArray());
         }
 
@@ -60,9 +69,34 @@ namespace MvcTest.Controllers
 
         [HttpPut]
         [Route("{suiteId}/Models/{modelId}")]
-        public IActionResult EditModel(int suiteId, int modelId, [FromBody] Model model)
+        public IActionResult EditModel(int suiteId, int modelId, IFormFile logoFile)
         {
-            return UseSuitesService(() => _suitesSvc.UpdateModel(suiteId, model));
+            if (!Request.Form.ContainsKey("model"))
+                return BadRequest(CreateErrorResponseBody("Item 'model' was not included in the form data."));
+
+            //Note that if client side the model json is appended to the form as a blob (as a way of specifying the Content-Type), ie like:
+            //
+            //fd.append('model', new Blob([JSON.stringify(modelToSend)], { type: 'application/json' }), 'model');
+            //
+            //then the model will be available as an IFormFile in the Request.Form.Files collection
+
+            var model = JsonConvert.DeserializeObject<Model>(Request.Form["model"]);
+
+            if (logoFile != null)
+            {
+                if (!logoFile.ContentType.StartsWith("image/"))
+                    return BadRequest(CreateErrorResponseBody("Specified logo is not an image."));
+            }
+
+            return UseSuitesService(() =>
+            {
+                _suitesSvc.UpdateModel(suiteId, model);
+
+                if (logoFile != null)
+                {
+                    _fileService.SaveModelLogo(suiteId, modelId, logoFile);
+                } 
+            });
         }
 
         [HttpDelete]
@@ -79,6 +113,15 @@ namespace MvcTest.Controllers
             return UseSuitesService(() => _suitesSvc.DeleteModel(suiteId, modelId));
         }
 
+        [HttpGet]
+        [Produces("application/octet-stream")]
+        [Route("{suiteId}/Models/{modelId}/logo")]
+        public IActionResult ModelLogo(int suiteId, int modelId)
+        {
+            var fstream = _fileService.GetModelLogo(suiteId, modelId);
+            return File(fstream, System.Net.Mime.MediaTypeNames.Application.Octet);
+        }
+
         private IActionResult UseSuitesService(Action useService)
         {
             try
@@ -89,10 +132,15 @@ namespace MvcTest.Controllers
             {
                 return StatusCode(
                     (int)ex.ErrorType.ToHttpErrorCode(),
-                    new { errorMsg = ex.Message });
+                    CreateErrorResponseBody(ex.Message));
             }
 
             return Ok();
+        }
+
+        private dynamic CreateErrorResponseBody(string errorMessage)
+        {
+            return new { errorMsg = errorMessage };
         }
 
         private SuiteViewModel SuiteToViewModel(Suite suite)
