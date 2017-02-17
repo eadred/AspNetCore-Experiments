@@ -15,6 +15,7 @@ using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Newtonsoft.Json;
 using MvcTest.Services.Files;
+using MvcTest.Services.ModelBinding;
 
 namespace MvcTest.Controllers
 {
@@ -69,19 +70,8 @@ namespace MvcTest.Controllers
 
         [HttpPut]
         [Route("{suiteId}/Models/{modelId}")]
-        public IActionResult EditModel(int suiteId, int modelId, IFormFile logoFile)
+        public IActionResult EditModel(int suiteId, int modelId, [ModelBinder(BinderType = typeof(FormItemModelBinder))] Model model, IFormFile logoFile)
         {
-            if (!Request.Form.ContainsKey("model"))
-                return BadRequest(CreateErrorResponseBody("Item 'model' was not included in the form data."));
-
-            //Note that if client side the model json is appended to the form as a blob (as a way of specifying the Content-Type), ie like:
-            //
-            //fd.append('model', new Blob([JSON.stringify(modelToSend)], { type: 'application/json' }), 'model');
-            //
-            //then the model will be available as an IFormFile in the Request.Form.Files collection
-
-            var model = JsonConvert.DeserializeObject<Model>(Request.Form["model"]);
-
             if (logoFile != null)
             {
                 if (!logoFile.ContentType.StartsWith("image/"))
