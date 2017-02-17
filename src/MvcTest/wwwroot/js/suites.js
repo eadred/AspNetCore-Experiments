@@ -355,8 +355,12 @@
                         reload();
                     },
                     function (apiErrorResult) {
-                        var msg = (apiErrorResult.data.errorMsg) ? apiErrorResult.data.errorMsg : "Unknown error (" + apiErrorResult.status + ")"
-                        showErrorDialog(msg);
+                        //This failure callback will also be called when the dialog is dismissed without saving.
+                        //apiErrorResult only gets set when we get an error back from the API call.
+                        if (apiErrorResult) {
+                            var msg = (apiErrorResult.data.errorMsg) ? apiErrorResult.data.errorMsg : "Unknown error (" + apiErrorResult.status + ")"
+                            showErrorDialog(msg);
+                        }
                     }
                 );
         }
