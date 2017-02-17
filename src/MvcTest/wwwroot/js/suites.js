@@ -208,24 +208,13 @@
         }
 
         self.addModel = function (parentSuiteId) {
-            var newModel = {
-                modelId: -1,
-                name: 'New Model'
-            }
-
-            var modal = $uibModal.open({
-                controller: 'EditModelDialogController',
-                controllerAs: 'dlgCtrl',
-                templateUrl: 'editModelDialog.html',
-                resolve: {
-                    editItem: newModel
-                }
-            });
-
-            doApiActionAfterDialog(modal, function (newModelDetails) {
-                var newModel = newModelDetails.editedModel;
-                return $http.post('/api/Suites/' + parentSuiteId + '/Models', newModel);
-            });
+            addOrEditModel(
+                parentSuiteId,
+                {
+                    modelId: -1,
+                    name: 'New Model'
+                },
+                true);
         }
 
         self.editSuite = function (suite) {
@@ -244,30 +233,10 @@
         }
 
         self.editModel = function (parentSuiteId, model) {
-            var modal = $uibModal.open({
-                controller: 'EditModelDialogController',
-                controllerAs: 'dlgCtrl',
-                templateUrl: 'editModelDialog.html',
-                resolve: {
-                    editItem: model
-                }
-            });
-
-            doApiActionAfterDialog(modal, function (editedModelDetails) {
-                var editedModel = editedModelDetails.editedModel;
-
-                var fd = new FormData();
-                fd.append('model', JSON.stringify(editedModel));
-                fd.append('logoFile', editedModelDetails.logoFile);
-
-                return $http.put(
-                    '/api/Suites/' + parentSuiteId + '/Models/' + editedModel.modelId,
-                    fd,
-                    {
-                        headers: { 'Content-Type': undefined },
-                        transformRequest: angular.identity
-                    });
-            });
+            addOrEditModel(
+                parentSuiteId,
+                model,
+                false);
         }
 
         self.deleteSuite = function (suite) {
@@ -330,6 +299,41 @@
                         }
                     }
                 });
+        }
+
+        function addOrEditModel(parentSuiteId, model, isNew) {
+            var url = '/api/Suites/' + parentSuiteId + '/Models';
+            var method = 'POST'
+
+            if (!isNew) {
+                url = url + '/' + model.modelId;
+                method = 'PUT'
+            }
+
+            var modal = $uibModal.open({
+                controller: 'EditModelDialogController',
+                controllerAs: 'dlgCtrl',
+                templateUrl: 'editModelDialog.html',
+                resolve: {
+                    editItem: model
+                }
+            });
+
+            doApiActionAfterDialog(modal, function (modelDetails) {
+                var editedModel = modelDetails.editedModel;
+
+                var fd = new FormData();
+                fd.append('model', JSON.stringify(editedModel));
+                fd.append('logoFile', modelDetails.logoFile);
+
+                return $http({
+                    method: method,
+                    url: url,
+                    data: fd,
+                    headers: { 'Content-Type': undefined },
+                    transformRequest: angular.identity
+                });
+            });
         }
 
         function showErrorDialog(errorMsg) {

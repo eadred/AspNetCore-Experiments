@@ -48,12 +48,13 @@ namespace MvcTest.Services.Suites
             SetSuite(newSuite);
         }
 
-        public void AddModel(int suiteId, Model newModel)
+        public int AddModel(int suiteId, Model newModel)
         {
             var parentSuite = FindParentSuite(suiteId);
             AssignIdToModel(newModel);
             ValidateModel(parentSuite, newModel);
             SetModel(parentSuite, newModel);
+            return newModel.ModelId;
         }
 
         public void UpdateSuite(SuiteViewModel suite)

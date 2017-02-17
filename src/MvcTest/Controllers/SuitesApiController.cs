@@ -56,9 +56,9 @@ namespace MvcTest.Controllers
 
         [HttpPost]
         [Route("{suiteId}/Models")]
-        public IActionResult AddModel(int suiteId, [FromBody] Model model)
+        public IActionResult AddModel(int suiteId, [FormItem(ItemName = "model")] Model newModel, IFormFile logoFile)
         {
-            return UseSuitesService(() => _suitesSvc.AddModel(suiteId, model));
+            return AddOrEditModel(suiteId, logoFile, () => _suitesSvc.AddModel(suiteId, newModel));
         }
 
         [HttpPut]
@@ -72,20 +72,10 @@ namespace MvcTest.Controllers
         [Route("{suiteId}/Models/{modelId}")]
         public IActionResult EditModel(int suiteId, int modelId, [FormItem(ItemName = "model")] Model editedModel, IFormFile logoFile)
         {
-            if (logoFile != null)
-            {
-                if (!logoFile.ContentType.StartsWith("image/"))
-                    return BadRequest(CreateErrorResponseBody("Specified logo is not an image."));
-            }
-
-            return UseSuitesService(() =>
+            return AddOrEditModel(suiteId, logoFile, () =>
             {
                 _suitesSvc.UpdateModel(suiteId, editedModel);
-
-                if (logoFile != null)
-                {
-                    _fileService.SaveModelLogo(suiteId, modelId, logoFile);
-                } 
+                return modelId;
             });
         }
 
@@ -110,6 +100,25 @@ namespace MvcTest.Controllers
         {
             var fstream = _fileService.GetModelLogo(suiteId, modelId);
             return File(fstream, System.Net.Mime.MediaTypeNames.Application.Octet);
+        }
+
+        private IActionResult AddOrEditModel(int suiteId, IFormFile logoFile, Func<int> callServiceAndReturnModelId)
+        {
+            if (logoFile != null)
+            {
+                if (!logoFile.ContentType.StartsWith("image/"))
+                    return BadRequest(CreateErrorResponseBody("Specified logo is not an image."));
+            }
+
+            return UseSuitesService(() =>
+            {
+                var modelId = callServiceAndReturnModelId();
+
+                if (logoFile != null)
+                {
+                    _fileService.SaveModelLogo(suiteId, modelId, logoFile);
+                }
+            });
         }
 
         private IActionResult UseSuitesService(Action useService)
