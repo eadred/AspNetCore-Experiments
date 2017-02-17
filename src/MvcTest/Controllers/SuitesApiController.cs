@@ -58,7 +58,7 @@ namespace MvcTest.Controllers
         [Route("{suiteId}/Models")]
         public IActionResult AddModel(int suiteId, [FormItem(ItemName = "model")] Model newModel, IFormFile logoFile)
         {
-            return AddOrEditModel(suiteId, logoFile, () => _suitesSvc.AddModel(suiteId, newModel));
+            return AddOrEditModel(suiteId, logoFile, () => _suitesSvc.AddModel(suiteId, newModel, logoFile));
         }
 
         [HttpPut]
@@ -72,33 +72,21 @@ namespace MvcTest.Controllers
         [Route("{suiteId}/Models/{modelId}")]
         public IActionResult EditModel(int suiteId, int modelId, [FormItem(ItemName = "model")] Model editedModel, IFormFile logoFile)
         {
-            return AddOrEditModel(suiteId, logoFile, () =>
-            {
-                _suitesSvc.UpdateModel(suiteId, editedModel);
-                return modelId;
-            });
+            return AddOrEditModel(suiteId, logoFile, () => _suitesSvc.UpdateModel(suiteId, editedModel, logoFile));
         }
 
         [HttpDelete]
         [Route("{suiteId}")]
         public IActionResult DeleteSuite(int suiteId)
         {
-            return UseSuitesService(() =>
-            {
-                _suitesSvc.DeleteSuite(suiteId);
-                _fileService.DeleteModelLogos(suiteId);
-            });
+            return UseSuitesService(() => _suitesSvc.DeleteSuite(suiteId));
         }
 
         [HttpDelete]
         [Route("{suiteId}/Models/{modelId}")]
         public IActionResult DeleteModel(int suiteId, int modelId)
         {
-            return UseSuitesService(() =>
-            {
-                _suitesSvc.DeleteModel(suiteId, modelId);
-                _fileService.DeleteModelLogo(suiteId, modelId);
-            });
+            return UseSuitesService(() => _suitesSvc.DeleteModel(suiteId, modelId));
         }
 
         [HttpGet]
@@ -110,7 +98,7 @@ namespace MvcTest.Controllers
             return File(fstream, System.Net.Mime.MediaTypeNames.Application.Octet);
         }
 
-        private IActionResult AddOrEditModel(int suiteId, IFormFile logoFile, Func<int> callServiceAndReturnModelId)
+        private IActionResult AddOrEditModel(int suiteId, IFormFile logoFile, Action callService)
         {
             if (logoFile != null)
             {
@@ -118,15 +106,7 @@ namespace MvcTest.Controllers
                     return BadRequest(CreateErrorResponseBody("Specified logo is not an image."));
             }
 
-            return UseSuitesService(() =>
-            {
-                var modelId = callServiceAndReturnModelId();
-
-                if (logoFile != null)
-                {
-                    _fileService.SaveModelLogo(suiteId, modelId, logoFile);
-                }
-            });
+            return UseSuitesService(callService);
         }
 
         private IActionResult UseSuitesService(Action useService)

@@ -1,4 +1,6 @@
-﻿using MvcTest.Models.Suites;
+﻿using Microsoft.AspNetCore.Http;
+using MvcTest.Models.Suites;
+using MvcTest.Services.Files;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,10 +10,13 @@ namespace MvcTest.Services.Suites
 {
     public class SuitesService : ISuitesService
     {
-        private Dictionary<int, SuiteViewModel> _suites;
+        private readonly IFileService _fileService;
+        private readonly Dictionary<int, SuiteViewModel> _suites;
 
-        public SuitesService()
+        public SuitesService(IFileService fileService)
         {
+            _fileService = fileService;
+
             _suites = new[] {
                 new SuiteViewModel
                 {
@@ -48,12 +53,10 @@ namespace MvcTest.Services.Suites
             SetSuite(newSuite);
         }
 
-        public int AddModel(int suiteId, Model newModel)
+        public int AddModel(int suiteId, Model newModel, IFormFile logoFile)
         {
-            var parentSuite = FindParentSuite(suiteId);
             AssignIdToModel(newModel);
-            ValidateModel(parentSuite, newModel);
-            SetModel(parentSuite, newModel);
+            UpdateModel(suiteId, newModel, logoFile);
             return newModel.ModelId;
         }
 
@@ -63,11 +66,12 @@ namespace MvcTest.Services.Suites
             SetSuite(suite);
         }
 
-        public void UpdateModel(int suiteId, Model model)
+        public void UpdateModel(int suiteId, Model model, IFormFile logoFile)
         {
             var parentSuite = FindParentSuite(suiteId);
             ValidateModel(parentSuite, model);
             SetModel(parentSuite, model);
+            SaveLogoFile(suiteId, model, logoFile);
         }
 
         public void DeleteSuite(int suiteId)
@@ -75,6 +79,8 @@ namespace MvcTest.Services.Suites
             if (!_suites.ContainsKey(suiteId)) throw new SuiteException(SuiteException.SuiteErrorType.NotFound, "The specified suite does not exist.");
 
             _suites.Remove(suiteId);
+
+            _fileService.DeleteModelLogos(suiteId);
         }
 
         public void DeleteModel(int suiteId, int modelId)
@@ -85,6 +91,8 @@ namespace MvcTest.Services.Suites
                 throw new SuiteException(SuiteException.SuiteErrorType.NotFound, "The specified model does not exist.");
 
             parentSuite.Models = parentSuite.Models.Where(m => m.ModelId != modelId).ToArray();
+
+            _fileService.DeleteModelLogo(suiteId, modelId);
         }
 
         private void AssignIdToSuite(SuiteViewModel suite)
@@ -138,6 +146,14 @@ namespace MvcTest.Services.Suites
                 .Concat(new[] { model })
                 .OrderBy(m => m.Name)
                 .ToArray();
+        }
+
+        private void SaveLogoFile(int suiteId, Model model, IFormFile logoFile)
+        {
+            if (logoFile != null)
+            {
+                _fileService.SaveModelLogo(suiteId, model.ModelId, logoFile);
+            }
         }
 
         private SuiteViewModel FindParentSuite(int suiteId)

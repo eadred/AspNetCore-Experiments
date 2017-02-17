@@ -1,4 +1,5 @@
-﻿using MvcTest.Models.Suites;
+﻿using Microsoft.AspNetCore.Http;
+using MvcTest.Models.Suites;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,11 +13,11 @@ namespace MvcTest.Services.Suites
 
         void AddSuite(SuiteViewModel newSuite);
 
-        int AddModel(int suiteId, Model newModel);
+        int AddModel(int suiteId, Model newModel, IFormFile logoFile);
 
         void UpdateSuite(SuiteViewModel suite);
 
-        void UpdateModel(int suiteId, Model model);
+        void UpdateModel(int suiteId, Model model, IFormFile logoFile);
 
         void DeleteSuite(int suiteId);
 
