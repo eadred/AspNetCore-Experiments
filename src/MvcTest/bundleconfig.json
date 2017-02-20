@@ -26,7 +26,7 @@
   {
     "outputFileName": "wwwroot/js/suites.js",
     "inputFiles": [
-      "content/js/suites/main.module.js",
+      "content/js/suites/suites.module.js",
       "content/js/suites/**/*.js"
     ],
     "minify": {

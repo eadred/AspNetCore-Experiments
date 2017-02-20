@@ -3,9 +3,9 @@
 
     angular
         .module('suites')
-        .controller('MainController', ['$http', '$uibModal', 'DialogService', MainController]);
+        .controller('SuitesController', ['$http', '$uibModal', 'DialogService', SuitesController]);
 
-    function MainController($http, $uibModal, DialogService) {
+    function SuitesController($http, $uibModal, DialogService) {
         var self = this;
 
         self.suites = [];
