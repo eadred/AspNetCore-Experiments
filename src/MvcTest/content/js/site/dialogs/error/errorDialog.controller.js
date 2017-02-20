@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('suites')
+        .module('common')
         .controller('ErrorDialogController', ErrorDialogController);
 
     function ErrorDialogController($uibModalInstance, errorMsg) {

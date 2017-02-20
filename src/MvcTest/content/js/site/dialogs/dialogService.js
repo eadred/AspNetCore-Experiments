@@ -1,10 +1,4 @@
-(function () {
-    'use strict';
-
-    var app = angular.module('common', ['ui.bootstrap']);
-
-})();
-(function () {
+﻿(function () {
     'use strict';
 
     angular
@@ -23,23 +17,6 @@
                     errorMsg: function () { return errorMsg; }
                 }
             });
-        }
-    }
-})();
-(function () {
-    'use strict';
-
-    angular
-        .module('common')
-        .controller('ErrorDialogController', ErrorDialogController);
-
-    function ErrorDialogController($uibModalInstance, errorMsg) {
-        var self = this;
-
-        self.errorMsg = errorMsg;
-
-        self.dismiss = function () {
-            $uibModalInstance.dismiss();
         }
     }
 })();

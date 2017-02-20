@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    var app = angular.module('suites', ['ui.bootstrap']);
+    var app = angular.module('suites', ['ui.bootstrap', 'common']);
 
 })();
 (function () {
@@ -162,26 +162,9 @@
 
     angular
         .module('suites')
-        .controller('ErrorDialogController', ErrorDialogController);
+        .controller('MainController', ['$http', '$uibModal', 'DialogService', MainController]);
 
-    function ErrorDialogController($uibModalInstance, errorMsg) {
-        var self = this;
-
-        self.errorMsg = errorMsg;
-
-        self.dismiss = function () {
-            $uibModalInstance.dismiss();
-        }
-    }
-})();
-(function () {
-    'use strict';
-
-    angular
-        .module('suites')
-        .controller('MainController', ['$http', '$uibModal', MainController]);
-
-    function MainController($http, $uibModal) {
+    function MainController($http, $uibModal, DialogService) {
         var self = this;
 
         self.suites = [];
@@ -336,17 +319,6 @@
             });
         }
 
-        function showErrorDialog(errorMsg) {
-            $uibModal.open({
-                controller: 'ErrorDialogController',
-                controllerAs: 'dlgCtrl',
-                templateUrl: 'editError.html',
-                resolve: {
-                    errorMsg: function () { return errorMsg; }
-                }
-            });
-        }
-
         function doApiActionAfterDialog(modalInstance, apiAction) {
             modalInstance.result
                 .then(apiAction)
@@ -359,7 +331,7 @@
                         //apiErrorResult only gets set when we get an error back from the API call.
                         if (apiErrorResult) {
                             var msg = (apiErrorResult.data.errorMsg) ? apiErrorResult.data.errorMsg : "Unknown error (" + apiErrorResult.status + ")"
-                            showErrorDialog(msg);
+                            DialogService.showError(msg);
                         }
                     }
                 );

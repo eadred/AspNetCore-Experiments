@@ -3,9 +3,9 @@
 
     angular
         .module('suites')
-        .controller('MainController', ['$http', '$uibModal', MainController]);
+        .controller('MainController', ['$http', '$uibModal', 'DialogService', MainController]);
 
-    function MainController($http, $uibModal) {
+    function MainController($http, $uibModal, DialogService) {
         var self = this;
 
         self.suites = [];
@@ -160,17 +160,6 @@
             });
         }
 
-        function showErrorDialog(errorMsg) {
-            $uibModal.open({
-                controller: 'ErrorDialogController',
-                controllerAs: 'dlgCtrl',
-                templateUrl: 'editError.html',
-                resolve: {
-                    errorMsg: function () { return errorMsg; }
-                }
-            });
-        }
-
         function doApiActionAfterDialog(modalInstance, apiAction) {
             modalInstance.result
                 .then(apiAction)
@@ -183,7 +172,7 @@
                         //apiErrorResult only gets set when we get an error back from the API call.
                         if (apiErrorResult) {
                             var msg = (apiErrorResult.data.errorMsg) ? apiErrorResult.data.errorMsg : "Unknown error (" + apiErrorResult.status + ")"
-                            showErrorDialog(msg);
+                            DialogService.showError(msg);
                         }
                     }
                 );

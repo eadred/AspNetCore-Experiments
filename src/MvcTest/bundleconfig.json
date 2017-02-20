@@ -14,6 +14,7 @@
   {
     "outputFileName": "wwwroot/js/site.js",
     "inputFiles": [
+      "content/js/site/common.module.js",
       "content/js/site/**/*.js"
     ],
     "minify": {
@@ -33,5 +34,9 @@
       "renameLocals": false
     },
     "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/templates/dialogs/error.html",
+    "inputFiles": [ "content/js/site/dialogs/error/errorDialog.tpl.html" ]
   }
 ]
