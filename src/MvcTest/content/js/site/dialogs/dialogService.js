@@ -18,5 +18,16 @@
                 }
             });
         }
+
+        self.showConfirmation = function (options) {
+            return $uibModal.open({
+                controller: 'ConfirmDialogController',
+                controllerAs: 'dlgCtrl',
+                templateUrl: '/templates/dialogs/confirm.html',
+                resolve: {
+                    options: options
+                }
+            });
+        }
     }
 })();

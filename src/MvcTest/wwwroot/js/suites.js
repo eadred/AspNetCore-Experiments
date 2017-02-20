@@ -9,30 +9,6 @@
 
     angular
         .module('suites')
-        .controller('ConfirmDialogController', ConfirmDialogController);
-
-    function ConfirmDialogController($uibModalInstance, options) {
-        var self = this;
-
-        self.title = options.title;
-        self.content = options.content;
-        self.cancelBtnText = options.cancelBtnText ? options.cancelBtnText : 'Cancel';
-        self.acceptBtnText = options.acceptBtnText ? options.acceptBtnText : 'Accept';
-
-        self.cancel = function () {
-            $uibModalInstance.dismiss();
-        }
-
-        self.accept = function () {
-            $uibModalInstance.close();
-        }
-    }
-})();
-(function () {
-    'use strict';
-
-    angular
-        .module('suites')
         .controller('EditModelDialogController', EditModelDialogController);
 
     function EditModelDialogController($scope, $uibModalInstance, editItem) {
@@ -223,19 +199,7 @@
         }
 
         self.deleteSuite = function (suite) {
-            var modal = $uibModal.open({
-                controller: 'ConfirmDialogController',
-                controllerAs: 'dlgCtrl',
-                templateUrl: 'confirmDialog.html',
-                resolve: {
-                    options: {
-                            title: 'Confirm deletion',
-                            content: 'Are you sure you want to delete suite ' + suite.name + '?',
-                            cancelBtnText: 'Don\'t delete',
-                            acceptBtnText: 'Delete'
-                        }
-                }
-            });
+            var modal = confirmDelete('Are you sure you want to delete suite ' + suite.name + '?');
 
             doApiActionAfterDialog(modal, function () {
                 return $http.delete('/api/Suites/' + suite.suiteId);
@@ -243,19 +207,7 @@
         }
 
         self.deleteModel = function (parentSuiteId, model) {
-            var modal = $uibModal.open({
-                controller: 'ConfirmDialogController',
-                controllerAs: 'dlgCtrl',
-                templateUrl: 'confirmDialog.html',
-                resolve: {
-                    options: {
-                        title: 'Confirm deletion',
-                        content: 'Are you sure you want to delete model ' + model.name + '?',
-                        cancelBtnText: 'Don\'t delete',
-                        acceptBtnText: 'Delete'
-                    }
-                }
-            });
+            var modal = confirmDelete('Are you sure you want to delete model ' + model.name + '?');
 
             doApiActionAfterDialog(modal, function () {
                 return $http.delete('/api/Suites/' + parentSuiteId + '/Models/' + model.modelId);
@@ -316,6 +268,15 @@
                     headers: { 'Content-Type': undefined },
                     transformRequest: angular.identity
                 });
+            });
+        }
+
+        function confirmDelete(message) {
+            return DialogService.showConfirmation({
+                title: 'Confirm deletion',
+                content: message,
+                cancelBtnText: 'Don\'t delete',
+                acceptBtnText: 'Delete'
             });
         }
 

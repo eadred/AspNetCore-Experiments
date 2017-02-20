@@ -38,5 +38,9 @@
   {
     "outputFileName": "wwwroot/templates/dialogs/error.html",
     "inputFiles": [ "content/js/site/dialogs/error/errorDialog.tpl.html" ]
+  },
+  {
+    "outputFileName": "wwwroot/templates/dialogs/confirm.html",
+    "inputFiles": [ "content/js/site/dialogs/confirm/confirmDialog.tpl.html" ]
   }
 ]

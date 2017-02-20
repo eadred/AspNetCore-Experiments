@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('suites')
+        .module('common')
         .controller('ConfirmDialogController', ConfirmDialogController);
 
     function ConfirmDialogController($uibModalInstance, options) {
