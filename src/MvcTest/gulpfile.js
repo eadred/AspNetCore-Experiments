@@ -1,4 +1,4 @@
-﻿/// <binding AfterBuild='min' Clean='clean' />
+﻿/// <binding BeforeBuild='min' AfterBuild='test' Clean='clean' />
 "use strict";
 
 var gulp = require("gulp"),
@@ -10,7 +10,8 @@ var gulp = require("gulp"),
     rename = require("gulp-rename"),
     clean = require("gulp-clean"),
     del = require("del"),
-    bundleconfig = require("./bundleconfig.json");
+    bundleconfig = require("./bundleconfig.json"),
+    Server = require('karma').Server;
 
 var regex = {
     css: /\.css$/,
@@ -69,6 +70,13 @@ gulp.task("clean", function () {
     });
 
     return merge(tasks);
+});
+
+gulp.task("test", ["min"], function (done) {
+    new Server({
+        configFile: __dirname + '/karma.unit.conf.js',
+        singleRun: true
+    }, done).start();
 });
 
 gulp.task("watch", function () {
