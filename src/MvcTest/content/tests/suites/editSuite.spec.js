@@ -44,6 +44,7 @@
         controller.editItem.name = '';
         controller.save();
         expect(uibModalInstance.editResult).toBe(null);
+        expect(uibModalInstance.dismissed).toBe(false);
     });
 
     it('should set the error details if name left blank', function () {

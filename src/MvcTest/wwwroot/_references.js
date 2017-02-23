@@ -7,6 +7,7 @@
 /// <reference path="../content/js/suites/editsuitedialog.controller.js" />
 /// <reference path="../content/js/suites/suites.controller.js" />
 /// <reference path="../content/js/suites/suites.module.js" />
+/// <reference path="../content/tests/suites/editsuite - copy.spec.js" />
 /// <reference path="../content/tests/suites/editsuite.spec.js" />
 /// <reference path="../gulpfile.js" />
 /// <reference path="../karma.unit.conf.js" />
