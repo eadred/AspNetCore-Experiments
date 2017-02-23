@@ -19,6 +19,8 @@ module.exports = function(config) {
       'wwwroot/lib/bootstrap/dist/js/bootstrap.js',
       'wwwroot/lib/angular/angular.js',
       'wwwroot/lib/angular-bootstrap/ui-bootstrap-tpls.js',
+      'node_modules/angular-mocks/angular-mocks.js',
+      'wwwroot/js/**/*.js',
       'content/tests/**/*.spec.js'
     ],
 

@@ -9,7 +9,7 @@
 
     angular
         .module('suites')
-        .controller('EditModelDialogController', EditModelDialogController);
+        .controller('EditModelDialogController', ['$scope', '$uibModalInstance', 'editItem', EditModelDialogController]);
 
     function EditModelDialogController($scope, $uibModalInstance, editItem) {
         var self = this;
@@ -38,7 +38,7 @@
 
             validate();
 
-            //Because this method is called fro mplain vanilla onchange event handler
+            //Because this method is called from plain vanilla onchange event handler
             //we need to tell ng to apply the changes
             $scope.$apply();
         }
@@ -86,7 +86,7 @@
 
     angular
         .module('suites')
-        .controller('EditSuiteDialogController', EditSuiteDialogController);
+        .controller('EditSuiteDialogController', ['$uibModalInstance', 'editItem', EditSuiteDialogController]);
 
     function EditSuiteDialogController($uibModalInstance, editItem) {
         var self = this;

@@ -3,7 +3,7 @@
 
     angular
         .module('suites')
-        .controller('EditSuiteDialogController', EditSuiteDialogController);
+        .controller('EditSuiteDialogController', ['$uibModalInstance', 'editItem', EditSuiteDialogController]);
 
     function EditSuiteDialogController($uibModalInstance, editItem) {
         var self = this;
