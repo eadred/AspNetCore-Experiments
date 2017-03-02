@@ -1,4 +1,4 @@
-﻿import { Multiplier } from "./multiplier";
+﻿import { Multiplier } from "./types/multiplier";
 
 export function multiplyIt(x: number): number {
     var m = new Multiplier("Test", 3);

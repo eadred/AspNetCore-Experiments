@@ -3,6 +3,7 @@
 **/content/ts/**/*.js.map
 
 # Gulp outputs that are recreated during the build
+**/temp/
 **/wwwroot/css/
 **/wwwroot/js/
 **/wwwroot/templates/

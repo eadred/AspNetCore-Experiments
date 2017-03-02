@@ -36,6 +36,18 @@
     "sourceMap": false
   },
   {
+    "outputFileName": "wwwroot/js/tstest.js",
+    "inputFiles": [
+      "temp/ts-out/tstest.js",
+      "content/js/tstest/**/*.js"
+    ],
+    "minify": {
+      "enabled": false,
+      "renameLocals": false
+    },
+    "sourceMap": false
+  },
+  {
     "outputFileName": "wwwroot/templates/dialogs/error.html",
     "inputFiles": [ "content/js/site/dialogs/error/errorDialog.tpl.html" ]
   },

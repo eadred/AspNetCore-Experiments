@@ -8,14 +8,9 @@
 
 @section scripts {
     <environment names="Development">
-        <script src="~/typescript_out/tsout.js"></script>
+        <script src="~/js/tstest.js"></script>
     </environment>
     <environment names="Staging,Production">
-        <script src="~/typescript_out/tsout.min.js"></script>
+        <script src="~/js/tstest.min.js"></script>
     </environment>
-    
-    <script>
-        System.import(System.baseURL + 'main');
-    </script>
-
 }

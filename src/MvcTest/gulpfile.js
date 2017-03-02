@@ -11,6 +11,7 @@ var gulp = require("gulp"),
     clean = require("gulp-clean"),
     del = require("del"),
     bundleconfig = require("./bundleconfig.json"),
+    tsbundleconfig = require("./bundleconfig.ts.json"),
     Server = require('karma').Server,
     ts = require("gulp-typescript"),
     sourcemaps = require('gulp-sourcemaps');
@@ -23,9 +24,9 @@ var regex = {
 
 
 
-gulp.task("min", ["min:js", "min:css", "min:html", "ts"]);
+gulp.task("min", ["min:js", "min:css", "min:html"]);
 
-gulp.task("min:js", function () {
+gulp.task("min:js", ["ts"], function () {
     var tasks = getBundles(regex.js).map(function (bundle) {
         return gulp.src(bundle.inputFiles, { base: "." })
             .pipe(concat(bundle.outputFileName))
@@ -36,6 +37,21 @@ gulp.task("min:js", function () {
             .pipe(uglify())
             .pipe(gulp.dest("."));
     });
+    return merge(tasks);
+});
+
+gulp.task("ts", function () {
+    var tasks = tsbundleconfig.map(function (bundle) {
+        var tsProject = ts.createProject("tsconfig.json", {out:bundle.outputFileName});
+
+        return gulp.src(bundle.inputFiles, { base: "." })
+        .pipe(sourcemaps.init())
+        .pipe(tsProject())
+        .js
+        .pipe(sourcemaps.write())
+        .pipe(gulp.dest("."));
+    });
+
     return merge(tasks);
 });
 
@@ -63,23 +79,11 @@ gulp.task("min:html", function () {
     return merge(tasks);
 });
 
-gulp.task("ts", function () {
-    var tsProject = ts.createProject("tsconfig.json", { out: "tsout.js" });
-    return gulp.src("content/ts/**/*.ts")
-        .pipe(sourcemaps.init())
-        .pipe(tsProject())
-        .js
-        .pipe(sourcemaps.write())
-        .pipe(gulp.dest("wwwroot/js/typescript_out"))
-        .pipe(rename(function (path) {
-            path.extname = ".min" + path.extname;
-        }))
-        .pipe(uglify())
-        .pipe(gulp.dest("wwwroot/js/typescript_out"));
-});
-
 gulp.task("clean", function () {
-    var tasks = bundleconfig.map(function (bundle) {
+    var bundlesAndTempOut = bundleconfig.slice(0);
+    bundlesAndTempOut.push({ outputFileName: "temp" })
+
+    var tasks = bundlesAndTempOut.map(function (bundle) {
         return gulp.src(bundle.outputFileName, { base: "." })
             .pipe(clean())
             .pipe(rename(function (path) {
