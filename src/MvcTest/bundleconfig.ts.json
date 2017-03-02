@@ -1,8 +1,0 @@
-﻿[
-  {
-    "outputFileName": "temp/ts-out/tstest.js",
-    "inputFiles": [
-      "content/ts/tstest/**/*.ts"
-    ]
-  }
-]

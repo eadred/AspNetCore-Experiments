@@ -11,7 +11,6 @@ var gulp = require("gulp"),
     clean = require("gulp-clean"),
     del = require("del"),
     bundleconfig = require("./bundleconfig.json"),
-    tsbundleconfig = require("./bundleconfig.ts.json"),
     Server = require('karma').Server,
     ts = require("gulp-typescript"),
     sourcemaps = require('gulp-sourcemaps');
@@ -19,7 +18,8 @@ var gulp = require("gulp"),
 var regex = {
     css: /\.css$/,
     html: /\.(html|htm)$/,
-    js: /\.js$/
+    js: /wwwroot\/.*\.js$/,
+    ts: /temp\/ts-out\/.*\.js$/
 };
 
 
@@ -41,7 +41,7 @@ gulp.task("min:js", ["ts"], function () {
 });
 
 gulp.task("ts", function () {
-    var tasks = tsbundleconfig.map(function (bundle) {
+    var tasks = getBundles(regex.ts).map(function (bundle) {
         var tsProject = ts.createProject("tsconfig.json", {out:bundle.outputFileName});
 
         return gulp.src(bundle.inputFiles, { base: "." })

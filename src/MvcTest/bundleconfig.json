@@ -36,6 +36,12 @@
     "sourceMap": false
   },
   {
+    "outputFileName": "temp/ts-out/tstest.js",
+    "inputFiles": [
+      "content/ts/tstest/**/*.ts"
+    ]
+  },
+  {
     "outputFileName": "wwwroot/js/tstest.js",
     "inputFiles": [
       "temp/ts-out/tstest.js",
