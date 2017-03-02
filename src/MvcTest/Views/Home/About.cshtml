@@ -5,3 +5,17 @@
 <h3>@ViewData["Message"]</h3>
 
 <p>Use this area to provide additional information.</p>
+
+@section scripts {
+    <environment names="Development">
+        <script src="~/typescript_out/tsout.js"></script>
+    </environment>
+    <environment names="Staging,Production">
+        <script src="~/typescript_out/tsout.min.js"></script>
+    </environment>
+    
+    <script>
+        System.import(System.baseURL + 'main');
+    </script>
+
+}

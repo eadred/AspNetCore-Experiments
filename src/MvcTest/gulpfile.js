@@ -11,7 +11,9 @@ var gulp = require("gulp"),
     clean = require("gulp-clean"),
     del = require("del"),
     bundleconfig = require("./bundleconfig.json"),
-    Server = require('karma').Server;
+    Server = require('karma').Server,
+    ts = require("gulp-typescript"),
+    sourcemaps = require('gulp-sourcemaps');
 
 var regex = {
     css: /\.css$/,
@@ -19,7 +21,9 @@ var regex = {
     js: /\.js$/
 };
 
-gulp.task("min", ["min:js", "min:css", "min:html"]);
+
+
+gulp.task("min", ["min:js", "min:css", "min:html", "ts"]);
 
 gulp.task("min:js", function () {
     var tasks = getBundles(regex.js).map(function (bundle) {
@@ -57,6 +61,21 @@ gulp.task("min:html", function () {
             .pipe(gulp.dest("."));
     });
     return merge(tasks);
+});
+
+gulp.task("ts", function () {
+    var tsProject = ts.createProject("tsconfig.json", { out: "tsout.js" });
+    return gulp.src("content/ts/**/*.ts")
+        .pipe(sourcemaps.init())
+        .pipe(tsProject())
+        .js
+        .pipe(sourcemaps.write())
+        .pipe(gulp.dest("wwwroot/js/typescript_out"))
+        .pipe(rename(function (path) {
+            path.extname = ".min" + path.extname;
+        }))
+        .pipe(uglify())
+        .pipe(gulp.dest("wwwroot/js/typescript_out"));
 });
 
 gulp.task("clean", function () {

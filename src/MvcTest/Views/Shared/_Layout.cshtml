@@ -55,6 +55,7 @@
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
         <script src="~/lib/angular/angular.js"></script>
         <script src="~/lib/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+        <script src="~/lib/system.js/dist/system.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
     </environment>
     <environment names="Staging,Production">
@@ -80,6 +81,10 @@
                   }
                   return true;
                 }()">
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/0.19.26/system.js"
+                asp-fallback-src="~/lib/system.js/dist/system.js"
+                asp-fallback-test="window.System">
         </script>
         <script src="~/js/site.min.js" asp-append-version="true"></script>
     </environment>
