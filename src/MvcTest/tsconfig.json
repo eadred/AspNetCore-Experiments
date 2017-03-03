@@ -5,6 +5,10 @@
     "removeComments": false,
     "sourceMap": true,
     "target": "es5",
-    "module": "system"
+    "module": "system",
+    "typeRoots": ["./node_modules/@types"],
+    "types": [
+      "angular"
+    ]
   }
 }
