@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "devDependencies": {
+    "@types/angular": "^1.5.23",
     "angular-mocks": "^1.6.2",
     "del": "^2.2.2",
     "gulp": "^3.9.1",

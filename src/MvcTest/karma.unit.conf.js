@@ -20,6 +20,8 @@ module.exports = function(config) {
       'wwwroot/lib/angular/angular.js',
       'wwwroot/lib/angular-bootstrap/ui-bootstrap-tpls.js',
       'node_modules/angular-mocks/angular-mocks.js',
+      'wwwroot/lib/system.js/dist/system.js',
+      'wwwroot/lib/system.js/dist/system-polyfills.js',
       'wwwroot/js/**/*.js',
       'content/tests/**/*.spec.js'
     ],
@@ -27,6 +29,7 @@ module.exports = function(config) {
 
     // list of files to exclude
     exclude: [
+        'wwwroot/js/**/*.min.js'
     ],
 
 

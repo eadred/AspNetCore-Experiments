@@ -11,10 +11,18 @@
       "content/css/suites/**/*.css"
     ]
   },
+
+
+  {
+    "outputFileName": "temp/ts-out/site.js",
+    "inputFiles": [
+      "content/ts/site/**/*.ts"
+    ]
+  },
   {
     "outputFileName": "wwwroot/js/site.js",
     "inputFiles": [
-      "content/js/site/common.module.js",
+      "temp/ts-out/site.js",
       "content/js/site/**/*.js"
     ],
     "minify": {
@@ -23,6 +31,8 @@
     },
     "sourceMap": false
   },
+
+
   {
     "outputFileName": "wwwroot/js/suites.js",
     "inputFiles": [
@@ -35,6 +45,8 @@
     },
     "sourceMap": false
   },
+
+
   {
     "outputFileName": "temp/ts-out/tstest.js",
     "inputFiles": [
@@ -53,6 +65,8 @@
     },
     "sourceMap": false
   },
+
+
   {
     "outputFileName": "wwwroot/templates/dialogs/error.html",
     "inputFiles": [ "content/js/site/dialogs/error/errorDialog.tpl.html" ]
