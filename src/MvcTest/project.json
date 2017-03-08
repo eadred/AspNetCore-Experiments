@@ -77,5 +77,15 @@
   "scripts": {
     "prepublish": [ "bower install", "dotnet bundle" ],
     "postpublish": [ "dotnet publish-iis --publish-folder %publish:OutputPath% --framework %publish:FullTargetFramework%" ]
+  },
+  "configurations": {
+    //This configuration name needs to coincide with a solution configuration name defined with the Configuration Manager
+    //Pssibly having spaces in the name may cause problems
+    "DebugMac": {
+      //These settings will be combined with the ones under the global buildOptions above
+      "buildOptions": {
+        "define": [ "MAC" ]
+      }
+    }
   }
 }

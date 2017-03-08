@@ -19,6 +19,10 @@ namespace MvcTest.Services.Authorization
         }
         protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, RoleRequirement requirement, TestItem resource)
         {
+#if MAC
+            context.Succeed(requirement);
+            await Task.CompletedTask; //To avoid the complaint about this being an async method without any awaits in it
+#else
             if (context.User.Identity.IsAuthenticated) //Strictly speaking don't have to do this if the action or controller is using Authorize with the default handler
             {
                 var user = await userManager.FindByNameAsync(context.User.Identity.Name);
@@ -31,6 +35,8 @@ namespace MvcTest.Services.Authorization
             }
 
             context.Fail();
+#endif
+
         }
     }
 }
